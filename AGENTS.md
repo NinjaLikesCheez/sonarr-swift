@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) and other coding age
 
 A Swift Concurrency-powered Sonarr v3 REST API client (Swift package, `swift-tools-version:6.0`). It builds on top of the [swift-api-client](https://github.com/NinjaLikesCheez/swift-api-client) package (`APIClient` module), which provides the generic `Client`/`Request` protocol machinery, and follows the same design as [Deluge-Swift](https://github.com/NinjaLikesCheez/Deluge-Swift). This repo layers Sonarr-specific request types, models, and error handling on top of that.
 
-Endpoint coverage is tracked as GitHub issues, one per Sonarr API group (tag in Sonarr's OpenAPI `v3.yaml`). When implementing one, follow the conventions below and add tests alongside the endpoints.
+Endpoint coverage is tracked as GitHub issues, one per Sonarr API group (tag in Sonarr's OpenAPI spec, vendored at [specs/v3.json](specs/v3.json)). When implementing one, check the spec for the exact request/response shapes, then follow the conventions below and add tests alongside the endpoints.
 
 ## Commands
 
@@ -20,6 +20,10 @@ Endpoint coverage is tracked as GitHub issues, one per Sonarr API group (tag in 
 Formatting/linting uses `xcrun swift-format` with the config in `.swift-format` (tabs, 120 col line length, enforced import ordering). CI (`.github/workflows/ci.yml`) runs on `macos-15` via `scripts/run_ci.sh` and will fail if code isn't pre-formatted; `.github/workflows/test.yml` runs `swift test` on Linux.
 
 ## Architecture
+
+### OpenAPI spec
+
+[specs/v3.json](specs/v3.json) is a vendored copy of Sonarr's v3 OpenAPI spec (`src/Sonarr.Api.V3/openapi.json` in the [Sonarr/Sonarr](https://github.com/Sonarr/Sonarr) repo, `develop` branch), pretty-printed for readability. It's the source of truth for exact request/response shapes, field names, and enum values when implementing an endpoint — check it before guessing at a model's fields. It's a point-in-time snapshot, not auto-updated, so re-fetch it from upstream if it looks stale relative to the Sonarr version being targeted.
 
 ### Request/Response flow
 
