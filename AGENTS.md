@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) and other coding age
 
 ## What this is
 
-A Combine/Swift Concurrency-powered Sonarr v3 REST API client (Swift package, `swift-tools-version:6.0`). It builds on top of the [swift-api-client](https://github.com/NinjaLikesCheez/swift-api-client) package (`APIClient` module), which provides the generic `Client`/`Request` protocol machinery, and follows the same design as [Deluge-Swift](https://github.com/NinjaLikesCheez/Deluge-Swift). This repo layers Sonarr-specific request types, models, and error handling on top of that.
+A Swift Concurrency-powered Sonarr v3 REST API client (Swift package, `swift-tools-version:6.0`). It builds on top of the [swift-api-client](https://github.com/NinjaLikesCheez/swift-api-client) package (`APIClient` module), which provides the generic `Client`/`Request` protocol machinery, and follows the same design as [Deluge-Swift](https://github.com/NinjaLikesCheez/Deluge-Swift). This repo layers Sonarr-specific request types, models, and error handling on top of that.
 
 Endpoint coverage is tracked as GitHub issues, one per Sonarr API group (tag in Sonarr's OpenAPI `v3.yaml`). When implementing one, follow the conventions below and add tests alongside the endpoints.
 
@@ -39,7 +39,7 @@ Formatting/linting uses `xcrun swift-format` with the config in `.swift-format` 
 
 ### Platform support
 
-Cross-platform (iOS 18+, tvOS 18+, macOS 15+, and Linux via SwiftPM): guards around `canImport(Combine)` and `canImport(FoundationNetworking)` exist because Combine and `URLSession` availability differ on Linux — preserve these guards when touching `Sonarr.swift`.
+Cross-platform (iOS 18+, tvOS 18+, macOS 15+, and Linux via SwiftPM): guards around `canImport(FoundationNetworking)` exist because `URLSession` availability differs on Linux — preserve this guard when touching `Sonarr.swift`.
 
 ### Tests
 
@@ -87,4 +87,4 @@ Formatting itself (indentation, line length, import order) is enforced mechanica
 
 - Tests use **Swift Testing** (`import Testing`, `@Suite`, `@Test`, `#expect`), not XCTest.
 - Future integration test suites should be annotated `@Suite("...", .serialized)` and share a single client instance, following Deluge-Swift.
-- Where a request has both a Combine and async/await entry point, write matching test pairs: `test_foo()` (wrapped in `#if canImport(Combine)`, iterating `.values`) and `test_foo_concurrency()` (plain `async throws`). Keep both in sync when behavior changes.
+- Write `async throws` tests for each request (e.g. `test_foo()`).

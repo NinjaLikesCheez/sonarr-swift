@@ -2,10 +2,6 @@
 import Foundation
 import Logging
 
-#if canImport(Combine)
-	import Combine
-#endif
-
 // URLSession exists in FoundationNetworking on Linux
 #if canImport(FoundationNetworking)
 	import FoundationNetworking
@@ -125,18 +121,6 @@ public final class Sonarr: Client, Sendable {
 		return String(bytes: data, encoding: .utf8)
 	}
 }
-
-#if canImport(Combine)
-	/// Combine-powered extensions for `Sonarr`.
-	public extension Sonarr {
-		/// Sends a request to the server.
-		/// - Parameter request: The request to be sent to the server.
-		/// - Returns: A publisher that emits a value when the request completes.
-		func request<Value: Decodable>(_ request: SonarrRequest<Value>) -> AnyPublisher<Value, Sonarr.Error> {
-			send(request: request)
-		}
-	}
-#endif
 
 /// Swift Concurrency powered extensions for `Sonarr`.
 public extension Sonarr {

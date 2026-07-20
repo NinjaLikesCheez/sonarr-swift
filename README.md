@@ -1,6 +1,6 @@
 # Sonarr
 
-A Combine and Swift Concurrency powered [Sonarr](https://sonarr.tv) v3 REST API client, built on [swift-api-client](https://github.com/NinjaLikesCheez/swift-api-client) and following the same design as [Deluge-Swift](https://github.com/NinjaLikesCheez/Deluge-Swift).
+A Swift Concurrency powered [Sonarr](https://sonarr.tv) v3 REST API client, built on [swift-api-client](https://github.com/NinjaLikesCheez/swift-api-client) and following the same design as [Deluge-Swift](https://github.com/NinjaLikesCheez/Deluge-Swift).
 
 > [!NOTE]
 > This is currently the base client only — endpoint coverage is being added incrementally, tracked in [issues](../../issues), one per Sonarr API group.
@@ -9,29 +9,11 @@ A Combine and Swift Concurrency powered [Sonarr](https://sonarr.tv) v3 REST API 
 
 Create a client with your server URL and API key (Sonarr → Settings → General → Security → API Key). The key is sent as the `X-Api-Key` header on every request.
 
-### Swift Concurrency
-
 ```swift
 import Sonarr
 
 let client = Sonarr(baseURL: URL(string: "http://localhost:8989")!, apiKey: "your-api-key")
 let series = try await client.request(.series)
-```
-
-### Combine
-
-```swift
-import Combine
-import Sonarr
-
-var cancellables = Set<AnyCancellable>()
-
-let client = Sonarr(baseURL: URL(string: "http://localhost:8989")!, apiKey: "your-api-key")
-client.request(.series)
-    .sink(receiveCompletion: { _ in }, receiveValue: { series in
-        print(series)
-    })
-    .store(in: &cancellables)
 ```
 
 ## Requests
