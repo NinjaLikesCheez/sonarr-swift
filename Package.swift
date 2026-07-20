@@ -24,5 +24,6 @@ let package = Package(
 			]
 		),
 		.testTarget(name: "SonarrTests", dependencies: [.target(name: "Sonarr")]),
+		.testTarget(name: "SonarrIntegrationTests", dependencies: [.target(name: "Sonarr")]),
 	]
 )
