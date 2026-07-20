@@ -48,6 +48,14 @@ fi
 export SONARR_API_KEY
 SONARR_API_KEY="$(sed -n 's:.*<ApiKey>\(.*\)</ApiKey>.*:\1:p' "${CONFIG_FILE}")"
 
+# config.xml existing doesn't mean the HTTP server is accepting connections yet - poll the API itself.
+for _ in $(seq 1 60); do
+  if curl -sf -o /dev/null -H "X-Api-Key: ${SONARR_API_KEY}" "http://localhost:8989/api"; then
+    break
+  fi
+  sleep 2
+done
+
 swift test --no-parallel --filter SonarrIntegrationTests && RC=$? || RC=$?
 
 "${DOCKER}" container stop SonarrIntegrationTests
