@@ -23,6 +23,19 @@ public extension SonarrRequest where SonarrResponse == [DownloadClientResource] 
 	static var downloadClientSchema: SonarrRequest<[DownloadClientResource]> {
 		SonarrRequest(method: .get, path: "api/v3/downloadclient/schema")
 	}
+
+	/// Updates tags, priority, or enablement for multiple download clients in a single request.
+	///
+	/// Endpoint: `PUT /api/v3/downloadclient/bulk`
+	///
+	/// Result: the updated download clients.
+	///
+	/// - Parameter bulkResource: The identifiers and fields to update across the affected download clients.
+	static func updateDownloadClients(_ bulkResource: DownloadClientBulkResource) -> SonarrRequest<
+		[DownloadClientResource]
+	> {
+		SonarrRequest(method: .put, path: "api/v3/downloadclient/bulk", body: { JSONBody(bulkResource) })
+	}
 }
 
 public extension SonarrRequest where SonarrResponse == DownloadClientResource {
@@ -79,18 +92,6 @@ public extension SonarrRequest where SonarrResponse == DownloadClientResource {
 			queryItems: [URLQueryItem(name: "forceSave", value: String(forceSave))],
 			body: { JSONBody(downloadClient) }
 		)
-	}
-
-	/// Updates tags, priority, or enablement for multiple download clients in a single request.
-	///
-	/// Endpoint: `PUT /api/v3/downloadclient/bulk`
-	///
-	/// Result: the updated download clients.
-	///
-	/// - Parameter bulkResource: The identifiers and fields to update across the affected download clients.
-	static func updateDownloadClients(_ bulkResource: DownloadClientBulkResource) -> SonarrRequest<DownloadClientResource>
-	{
-		SonarrRequest(method: .put, path: "api/v3/downloadclient/bulk", body: { JSONBody(bulkResource) })
 	}
 }
 
