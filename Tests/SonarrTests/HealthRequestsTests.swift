@@ -88,6 +88,35 @@ struct HealthRequestsTests {
 		#expect(healthCheck.wikiUrl.fullUri == nil)
 	}
 
+	// Sonarr's live server omits `id` entirely from health check entries, despite the OpenAPI
+	// spec marking it required.
+	@Test func healthResourceDecodingWithMissingId() throws {
+		let json = Data(
+			#"""
+			{
+				"source": "UpdateCheck",
+				"type": "warning",
+				"message": "New update is available",
+				"wikiUrl": {
+					"fullUri": null,
+					"scheme": null,
+					"host": null,
+					"port": null,
+					"path": null,
+					"query": null,
+					"fragment": null
+				}
+			}
+			"""#.utf8
+		)
+
+		let healthCheck = try client.decoder.decode(HealthResource.self, from: json)
+
+		#expect(healthCheck.id == nil)
+		#expect(healthCheck.source == "UpdateCheck")
+		#expect(healthCheck.type == .warning)
+	}
+
 	@Test func healthCheckResultDecodesAllCases() throws {
 		for (raw, expected) in [
 			("ok", HealthCheckResult.ok), ("notice", .notice), ("warning", .warning), ("error", .error),
