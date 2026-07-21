@@ -9,18 +9,9 @@ public struct FileSystemModel: Equatable, Decodable, Sendable {
 	/// The full filesystem path of the entry.
 	public let path: String?
 	/// The file extension, present only for file entries.
-	public let extension_: String?
+	public let `extension`: String?
 	/// The size of the entry in bytes, present only for file entries.
 	public let size: Int64?
 	/// When the entry was last modified, if known.
 	public let lastModified: Date?
-
-	private enum CodingKeys: String, CodingKey {
-		case type
-		case name
-		case path
-		case extension_ = "extension"
-		case size
-		case lastModified
-	}
 }

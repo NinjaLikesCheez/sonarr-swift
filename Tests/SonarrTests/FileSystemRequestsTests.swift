@@ -114,13 +114,13 @@ struct FileSystemRequestsTests {
 		#expect(directory.type == .folder)
 		#expect(directory.name == "data")
 		#expect(directory.path == "/data/")
-		#expect(directory.extension_ == nil)
+		#expect(directory.extension == nil)
 		#expect(directory.size == nil)
 
 		let file = try #require(fileSystem.files?.first)
 		#expect(file.type == .file)
 		#expect(file.name == "movie.mkv")
-		#expect(file.extension_ == ".mkv")
+		#expect(file.extension == ".mkv")
 		#expect(file.size == 1_000_000_000)
 	}
 
