@@ -1,5 +1,5 @@
 /// A custom format Sonarr matched against a release.
-public struct CustomFormat: Equatable, Decodable, Sendable {
+public struct CustomFormat: Equatable, Codable, Sendable {
 	/// Sonarr's internal identifier for the custom format.
 	public let id: Int
 	/// The display name of the custom format.

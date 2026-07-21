@@ -1,5 +1,5 @@
 /// The kind of artwork a `MediaCover` represents.
-public enum MediaCoverType: String, Equatable, Decodable, Sendable {
+public enum MediaCoverType: String, Equatable, Codable, Sendable {
 	case unknown
 	case poster
 	case banner
@@ -10,7 +10,7 @@ public enum MediaCoverType: String, Equatable, Decodable, Sendable {
 }
 
 /// A piece of artwork Sonarr has associated with a series or episode.
-public struct MediaCover: Equatable, Decodable, Sendable {
+public struct MediaCover: Equatable, Codable, Sendable {
 	/// The kind of artwork this image represents.
 	public let coverType: MediaCoverType
 	/// The URL Sonarr serves this image from.

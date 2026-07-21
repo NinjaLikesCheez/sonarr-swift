@@ -5,7 +5,7 @@ import Foundation
 // Series tag itself is implemented.
 
 /// A series known to Sonarr.
-public struct SeriesResource: Equatable, Decodable, Sendable {
+public struct SeriesResource: Equatable, Codable, Sendable {
 	/// Sonarr's internal identifier for the series.
 	public let id: Int
 	/// The title of the series.

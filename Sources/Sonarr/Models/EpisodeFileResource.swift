@@ -5,7 +5,7 @@ import Foundation
 // when the EpisodeFile tag itself is implemented.
 
 /// A media file on disk associated with an episode.
-public struct EpisodeFileResource: Equatable, Decodable, Sendable {
+public struct EpisodeFileResource: Equatable, Codable, Sendable {
 	/// Sonarr's internal identifier for the episode file.
 	public let id: Int
 	/// The series the file belongs to.

@@ -1,5 +1,5 @@
 /// A quality definition Sonarr can match releases against.
-public struct Quality: Equatable, Decodable, Sendable {
+public struct Quality: Equatable, Codable, Sendable {
 	/// Sonarr's internal identifier for the quality.
 	public let id: Int
 	/// The display name of the quality, e.g. `WEBDL-1080p`.
@@ -11,7 +11,7 @@ public struct Quality: Equatable, Decodable, Sendable {
 }
 
 /// The version metadata Sonarr attaches to a matched quality, e.g. proper/repack revisions.
-public struct QualityRevision: Equatable, Decodable, Sendable {
+public struct QualityRevision: Equatable, Codable, Sendable {
 	/// The revision version; incremented for propers.
 	public let version: Int
 	/// The "real" revision count Sonarr assigns to REAL releases.
@@ -21,7 +21,7 @@ public struct QualityRevision: Equatable, Decodable, Sendable {
 }
 
 /// The quality Sonarr matched for a release, along with its revision metadata.
-public struct QualityModel: Equatable, Decodable, Sendable {
+public struct QualityModel: Equatable, Codable, Sendable {
 	/// The matched quality.
 	public let quality: Quality
 	/// The revision metadata for the matched quality.
