@@ -85,7 +85,9 @@ struct DelayProfileRequestsTests {
 
 	@Test
 	func test_reorderDelayProfile() async throws {
-		let tagID = try await createTag(label: "integration-test-delayprofile-reorder")
+		// Sonarr rejects a tag that's already used by another delay profile, so each profile needs its own tag.
+		let firstTagID = try await createTag(label: "integration-test-delayprofile-reorder-1")
+		let secondTagID = try await createTag(label: "integration-test-delayprofile-reorder-2")
 
 		let first = try await client.request(
 			.addDelayProfile(
@@ -95,7 +97,7 @@ struct DelayProfileRequestsTests {
 					preferredProtocol: .usenet,
 					usenetDelay: 0,
 					torrentDelay: 0,
-					tags: [tagID]
+					tags: [firstTagID]
 				)
 			)
 		)
@@ -107,7 +109,7 @@ struct DelayProfileRequestsTests {
 					preferredProtocol: .usenet,
 					usenetDelay: 0,
 					torrentDelay: 0,
-					tags: [tagID]
+					tags: [secondTagID]
 				)
 			)
 		)
@@ -121,6 +123,7 @@ struct DelayProfileRequestsTests {
 		try await client.request(.deleteDelayProfile(id: firstID))
 		try await client.request(.deleteDelayProfile(id: secondID))
 
-		try await deleteTag(id: tagID)
+		try await deleteTag(id: firstTagID)
+		try await deleteTag(id: secondTagID)
 	}
 }
