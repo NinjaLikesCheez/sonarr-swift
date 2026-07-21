@@ -65,4 +65,25 @@ struct DiskSpaceRequestsTests {
 		#expect(diskSpace.freeSpace == 0)
 		#expect(diskSpace.totalSpace == 0)
 	}
+
+	// Sonarr's live server omits `id` entirely from diskspace entries, despite the OpenAPI
+	// spec marking it required.
+	@Test func diskSpaceResourceDecodingWithMissingId() throws {
+		let json = Data(
+			#"""
+			{
+				"path": "/data",
+				"label": "media",
+				"freeSpace": 1000000000,
+				"totalSpace": 2000000000
+			}
+			"""#.utf8
+		)
+
+		let diskSpace = try client.decoder.decode(DiskSpaceResource.self, from: json)
+
+		#expect(diskSpace.id == nil)
+		#expect(diskSpace.path == "/data")
+		#expect(diskSpace.label == "media")
+	}
 }
