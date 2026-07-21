@@ -11,6 +11,8 @@ public struct HealthResource: Equatable, Decodable, Sendable {
 	public let type: HealthCheckResult
 	/// A human-readable description of the issue, if any.
 	public let message: String?
+	// Sonarr's OpenAPI spec models `wikiUrl` as a structured `HttpUri` object, but the live
+	// server sends it as a plain URL string.
 	/// A link to the wiki article explaining this health check, if available.
-	public let wikiUrl: HttpUri
+	public let wikiUrl: String?
 }

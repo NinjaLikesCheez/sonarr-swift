@@ -25,15 +25,7 @@ struct HealthRequestsTests {
 					"source": "UpdateCheck",
 					"type": "warning",
 					"message": "New update is available",
-					"wikiUrl": {
-						"fullUri": "https://wiki.servarr.com/sonarr/system#updating",
-						"scheme": "https",
-						"host": "wiki.servarr.com",
-						"port": 443,
-						"path": "/sonarr/system",
-						"query": null,
-						"fragment": "updating"
-					},
+					"wikiUrl": "https://wiki.servarr.com/sonarr/system#updating",
 					"id": 1
 				}
 			]
@@ -49,13 +41,7 @@ struct HealthRequestsTests {
 		#expect(healthCheck.source == "UpdateCheck")
 		#expect(healthCheck.type == .warning)
 		#expect(healthCheck.message == "New update is available")
-		#expect(healthCheck.wikiUrl.fullUri == "https://wiki.servarr.com/sonarr/system#updating")
-		#expect(healthCheck.wikiUrl.scheme == "https")
-		#expect(healthCheck.wikiUrl.host == "wiki.servarr.com")
-		#expect(healthCheck.wikiUrl.port == 443)
-		#expect(healthCheck.wikiUrl.path == "/sonarr/system")
-		#expect(healthCheck.wikiUrl.query == nil)
-		#expect(healthCheck.wikiUrl.fragment == "updating")
+		#expect(healthCheck.wikiUrl == "https://wiki.servarr.com/sonarr/system#updating")
 	}
 
 	@Test func healthResourceDecodingWithNullableFields() throws {
@@ -66,15 +52,7 @@ struct HealthRequestsTests {
 				"source": null,
 				"type": "ok",
 				"message": null,
-				"wikiUrl": {
-					"fullUri": null,
-					"scheme": null,
-					"host": null,
-					"port": null,
-					"path": null,
-					"query": null,
-					"fragment": null
-				}
+				"wikiUrl": null
 			}
 			"""#.utf8
 		)
@@ -85,7 +63,7 @@ struct HealthRequestsTests {
 		#expect(healthCheck.source == nil)
 		#expect(healthCheck.type == .ok)
 		#expect(healthCheck.message == nil)
-		#expect(healthCheck.wikiUrl.fullUri == nil)
+		#expect(healthCheck.wikiUrl == nil)
 	}
 
 	// Sonarr's live server omits `id` entirely from health check entries, despite the OpenAPI
@@ -97,15 +75,7 @@ struct HealthRequestsTests {
 				"source": "UpdateCheck",
 				"type": "warning",
 				"message": "New update is available",
-				"wikiUrl": {
-					"fullUri": null,
-					"scheme": null,
-					"host": null,
-					"port": null,
-					"path": null,
-					"query": null,
-					"fragment": null
-				}
+				"wikiUrl": null
 			}
 			"""#.utf8
 		)
