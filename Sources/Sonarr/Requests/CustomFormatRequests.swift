@@ -9,6 +9,31 @@ public extension SonarrRequest where SonarrResponse == [CustomFormatResource] {
 	static var customFormats: SonarrRequest<[CustomFormatResource]> {
 		SonarrRequest(method: .get, path: "api/v3/customformat")
 	}
+
+	/// Updates the rename inclusion setting for multiple custom formats in a single request.
+	///
+	/// Endpoint: `PUT /api/v3/customformat/bulk`
+	///
+	/// Result: the updated custom formats.
+	///
+	/// - Parameters:
+	///   - ids: The identifiers of the custom formats to update.
+	///   - includeCustomFormatWhenRenaming: Whether the affected custom formats' names are appended to the file
+	///   when renaming.
+	static func updateCustomFormats(
+		ids: [Int],
+		includeCustomFormatWhenRenaming: Bool? = nil
+	) -> SonarrRequest<[CustomFormatResource]> {
+		SonarrRequest(
+			method: .put,
+			path: "api/v3/customformat/bulk",
+			body: {
+				JSONBody(
+					CustomFormatBulkResource(ids: ids, includeCustomFormatWhenRenaming: includeCustomFormatWhenRenaming)
+				)
+			}
+		)
+	}
 }
 
 public extension SonarrRequest where SonarrResponse == CustomFormatResource {
@@ -48,31 +73,6 @@ public extension SonarrRequest where SonarrResponse == CustomFormatResource {
 		_ customFormat: CustomFormatResource
 	) -> SonarrRequest<CustomFormatResource> {
 		SonarrRequest(method: .put, path: "api/v3/customformat/\(id)", body: { JSONBody(customFormat) })
-	}
-
-	/// Updates the rename inclusion setting for multiple custom formats in a single request.
-	///
-	/// Endpoint: `PUT /api/v3/customformat/bulk`
-	///
-	/// Result: the updated custom format.
-	///
-	/// - Parameters:
-	///   - ids: The identifiers of the custom formats to update.
-	///   - includeCustomFormatWhenRenaming: Whether the affected custom formats' names are appended to the file
-	///   when renaming.
-	static func updateCustomFormats(
-		ids: [Int],
-		includeCustomFormatWhenRenaming: Bool? = nil
-	) -> SonarrRequest<CustomFormatResource> {
-		SonarrRequest(
-			method: .put,
-			path: "api/v3/customformat/bulk",
-			body: {
-				JSONBody(
-					CustomFormatBulkResource(ids: ids, includeCustomFormatWhenRenaming: includeCustomFormatWhenRenaming)
-				)
-			}
-		)
 	}
 }
 
