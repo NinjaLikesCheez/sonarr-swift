@@ -1,8 +1,40 @@
+import Foundation
 import Sonarr
 import Testing
 
 @Suite("CustomFormat Requests", .serialized)
 struct CustomFormatRequestsTests {
+	// `Field` has no public initializer, so build it the same way the wire format does: decode it.
+	private static func releaseTitleSpecification(value: String) -> CustomFormatSpecificationSchema {
+		let fieldJSON = Data(
+			#"""
+			[
+				{
+					"order": 0,
+					"name": "value",
+					"label": "Regular Expression",
+					"value": "\#(value)",
+					"type": "textbox",
+					"advanced": false,
+					"privacy": "normal",
+					"isFloat": false
+				}
+			]
+			"""#.utf8
+		)
+		let fields = try! JSONDecoder().decode([Field].self, from: fieldJSON)
+
+		return CustomFormatSpecificationSchema(
+			name: "Release Title",
+			implementation: "ReleaseTitleSpecification",
+			implementationName: "Release Title",
+			infoLink: nil,
+			negate: false,
+			required: true,
+			fields: fields
+		)
+	}
+
 	@Test
 	func test_addCustomFormat_customFormats_customFormat_updateCustomFormat_deleteCustomFormat() async throws {
 		let created = try await client.request(
@@ -10,7 +42,7 @@ struct CustomFormatRequestsTests {
 				CustomFormatResource(
 					name: "Integration Test Format",
 					includeCustomFormatWhenRenaming: false,
-					specifications: []
+					specifications: [Self.releaseTitleSpecification(value: "test")]
 				)
 			)
 		)
@@ -31,7 +63,7 @@ struct CustomFormatRequestsTests {
 					id: id,
 					name: "Integration Test Format Renamed",
 					includeCustomFormatWhenRenaming: false,
-					specifications: []
+					specifications: [Self.releaseTitleSpecification(value: "test")]
 				)
 			)
 		)
@@ -47,12 +79,20 @@ struct CustomFormatRequestsTests {
 	func test_updateCustomFormats_deleteCustomFormats() async throws {
 		let first = try await client.request(
 			.addCustomFormat(
-				CustomFormatResource(name: "Bulk Test Format 1", includeCustomFormatWhenRenaming: false, specifications: [])
+				CustomFormatResource(
+					name: "Bulk Test Format 1",
+					includeCustomFormatWhenRenaming: false,
+					specifications: [Self.releaseTitleSpecification(value: "test1")]
+				)
 			)
 		)
 		let second = try await client.request(
 			.addCustomFormat(
-				CustomFormatResource(name: "Bulk Test Format 2", includeCustomFormatWhenRenaming: false, specifications: [])
+				CustomFormatResource(
+					name: "Bulk Test Format 2",
+					includeCustomFormatWhenRenaming: false,
+					specifications: [Self.releaseTitleSpecification(value: "test2")]
+				)
 			)
 		)
 
