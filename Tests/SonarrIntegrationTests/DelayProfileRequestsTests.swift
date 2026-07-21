@@ -1,11 +1,35 @@
+import APIClient
 import Foundation
 import Sonarr
 import Testing
+
+// Sonarr requires at least one tag on a delay profile - tags aren't covered by this issue's tag (see the
+// Tag OpenAPI group), so create one directly here rather than pulling in unrelated library surface.
+private struct TagResource: Codable {
+	let id: Int?
+	let label: String
+}
+
+private func createTag(label: String) async throws -> Int {
+	let request = SonarrRequest<TagResource>(
+		method: .post,
+		path: "api/v3/tag",
+		body: { JSONBody(TagResource(id: nil, label: label)) }
+	)
+	let tag = try await client.request(request)
+	return try #require(tag.id)
+}
+
+private func deleteTag(id: Int) async throws {
+	try await client.request(SonarrRequest<EmptyResponse>(method: .delete, path: "api/v3/tag/\(id)"))
+}
 
 @Suite("DelayProfile Requests", .serialized)
 struct DelayProfileRequestsTests {
 	@Test
 	func test_addDelayProfile_delayProfiles_delayProfile_updateDelayProfile_deleteDelayProfile() async throws {
+		let tagID = try await createTag(label: "integration-test-delayprofile")
+
 		let created = try await client.request(
 			.addDelayProfile(
 				DelayProfileResource(
@@ -17,7 +41,7 @@ struct DelayProfileRequestsTests {
 					bypassIfHighestQuality: false,
 					bypassIfAboveCustomFormatScore: false,
 					minimumCustomFormatScore: 0,
-					tags: []
+					tags: [tagID]
 				)
 			)
 		)
@@ -44,7 +68,7 @@ struct DelayProfileRequestsTests {
 					bypassIfHighestQuality: false,
 					bypassIfAboveCustomFormatScore: false,
 					minimumCustomFormatScore: 0,
-					tags: []
+					tags: [tagID]
 				)
 			)
 		)
@@ -55,10 +79,14 @@ struct DelayProfileRequestsTests {
 
 		let remaining = try await client.request(.delayProfiles)
 		#expect(!remaining.contains(where: { $0.id == id }))
+
+		try await deleteTag(id: tagID)
 	}
 
 	@Test
 	func test_reorderDelayProfile() async throws {
+		let tagID = try await createTag(label: "integration-test-delayprofile-reorder")
+
 		let first = try await client.request(
 			.addDelayProfile(
 				DelayProfileResource(
@@ -67,7 +95,7 @@ struct DelayProfileRequestsTests {
 					preferredProtocol: .usenet,
 					usenetDelay: 0,
 					torrentDelay: 0,
-					tags: []
+					tags: [tagID]
 				)
 			)
 		)
@@ -79,7 +107,7 @@ struct DelayProfileRequestsTests {
 					preferredProtocol: .usenet,
 					usenetDelay: 0,
 					torrentDelay: 0,
-					tags: []
+					tags: [tagID]
 				)
 			)
 		)
@@ -92,5 +120,7 @@ struct DelayProfileRequestsTests {
 
 		try await client.request(.deleteDelayProfile(id: firstID))
 		try await client.request(.deleteDelayProfile(id: secondID))
+
+		try await deleteTag(id: tagID)
 	}
 }
