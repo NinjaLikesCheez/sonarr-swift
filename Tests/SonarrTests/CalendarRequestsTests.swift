@@ -136,7 +136,10 @@ struct CalendarRequestsTests {
 					"quality": {
 						"quality": {"id": 3, "name": "WEBDL-1080p", "source": "web", "resolution": 1080},
 						"revision": {"version": 1, "real": 0, "isRepack": false}
-					}
+					},
+					"customFormatScore": 0,
+					"releaseType": "singleEpisode",
+					"qualityCutoffNotMet": false
 				},
 				"images": [
 					{"coverType": "poster", "url": "/mediacover/5/poster.jpg", "remoteUrl": "https://example.com/poster.jpg"}
