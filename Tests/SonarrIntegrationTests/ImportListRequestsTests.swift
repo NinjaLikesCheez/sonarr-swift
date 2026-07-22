@@ -30,6 +30,8 @@ struct ImportListRequestsTests {
 			searchForMissingEpisodes: false,
 			shouldMonitor: .none,
 			monitorNewItems: .none,
+			// The container only mounts /config - point at a real path so Sonarr's PathValidator passes.
+			rootFolderPath: "/config",
 			qualityProfileId: 1,
 			seriesType: .standard,
 			seasonFolder: true,
