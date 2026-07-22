@@ -3,6 +3,23 @@ import Testing
 
 @Suite("ImportList Requests", .serialized)
 struct ImportListRequestsTests {
+	// Import lists validate rootFolderPath against Sonarr's registered root folders, not just the filesystem -
+	// the RootFolder tag isn't implemented yet, so register one directly against the endpoint for this test.
+	private static func ensureRootFolderRegistered(path: String) async throws {
+		let existing = try await client.request(
+			SonarrRequest<[RootFolderResourceFixture]>(method: .get, path: "api/v3/rootfolder")
+		)
+		guard !existing.contains(where: { $0.path == path }) else { return }
+
+		_ = try await client.request(
+			SonarrRequest<RootFolderResourceFixture>(
+				method: .post,
+				path: "api/v3/rootfolder",
+				body: { JSONBody(RootFolderResourceFixture(path: path)) }
+			)
+		)
+	}
+
 	// The schema endpoint returns a preset per implementation with its default fields already populated -
 	// start from that instead of guessing at field shapes, and only override what the test needs.
 	private static func plexWatchlistPreset() async throws -> ImportListResource {
@@ -42,6 +59,7 @@ struct ImportListRequestsTests {
 
 	@Test
 	func test_addImportList_importLists_importList_updateImportList_deleteImportList() async throws {
+		try await Self.ensureRootFolderRegistered(path: "/config")
 		let preset = try await Self.plexWatchlistPreset()
 
 		let created = try await client.request(
@@ -83,6 +101,7 @@ struct ImportListRequestsTests {
 
 	@Test
 	func test_updateImportLists_deleteImportLists() async throws {
+		try await Self.ensureRootFolderRegistered(path: "/config")
 		let preset = try await Self.plexWatchlistPreset()
 
 		let first = try await client.request(
@@ -122,4 +141,8 @@ struct ImportListRequestsTests {
 	func test_testAllImportLists() async throws {
 		try await client.request(.testAllImportLists)
 	}
+}
+
+private struct RootFolderResourceFixture: Equatable, Codable, Sendable {
+	let path: String
 }
