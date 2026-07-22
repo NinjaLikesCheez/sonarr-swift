@@ -23,6 +23,17 @@ public extension SonarrRequest where SonarrResponse == [ImportListResource] {
 	static var importListSchema: SonarrRequest<[ImportListResource]> {
 		SonarrRequest(method: .get, path: "api/v3/importlist/schema")
 	}
+
+	/// Updates tags, automatic add, root folder, or quality profile for multiple import lists in a single request.
+	///
+	/// Endpoint: `PUT /api/v3/importlist/bulk`
+	///
+	/// Result: the updated import lists.
+	///
+	/// - Parameter bulkResource: The identifiers and fields to update across the affected import lists.
+	static func updateImportLists(_ bulkResource: ImportListBulkResource) -> SonarrRequest<[ImportListResource]> {
+		SonarrRequest(method: .put, path: "api/v3/importlist/bulk", body: { JSONBody(bulkResource) })
+	}
 }
 
 public extension SonarrRequest where SonarrResponse == ImportListResource {
@@ -79,17 +90,6 @@ public extension SonarrRequest where SonarrResponse == ImportListResource {
 			queryItems: [URLQueryItem(name: "forceSave", value: String(forceSave))],
 			body: { JSONBody(importList) }
 		)
-	}
-
-	/// Updates tags, automatic add, root folder, or quality profile for multiple import lists in a single request.
-	///
-	/// Endpoint: `PUT /api/v3/importlist/bulk`
-	///
-	/// Result: the updated import list.
-	///
-	/// - Parameter bulkResource: The identifiers and fields to update across the affected import lists.
-	static func updateImportLists(_ bulkResource: ImportListBulkResource) -> SonarrRequest<ImportListResource> {
-		SonarrRequest(method: .put, path: "api/v3/importlist/bulk", body: { JSONBody(bulkResource) })
 	}
 }
 
