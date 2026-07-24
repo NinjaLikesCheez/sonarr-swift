@@ -69,6 +69,14 @@ struct LanguageProfileRequestsTests {
 		#expect(request.path == "api/v3/languageprofile/1")
 	}
 
+	@available(*, deprecated)
+	@Test func languageProfileSchemaRequestConstruction() {
+		let request = SonarrRequest.languageProfileSchema
+
+		#expect(request.method == .get)
+		#expect(request.path == "api/v3/languageprofile/schema")
+	}
+
 	@Test func languageProfileResourceDecoding() throws {
 		let json = Data(
 			#"""

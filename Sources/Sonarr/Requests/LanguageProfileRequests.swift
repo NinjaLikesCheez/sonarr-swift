@@ -59,6 +59,16 @@ public extension SonarrRequest where SonarrResponse == LanguageProfileResource {
 	static func languageProfile(id: Int) -> SonarrRequest<LanguageProfileResource> {
 		SonarrRequest(method: .get, path: "api/v3/languageprofile/\(id)")
 	}
+
+	/// Gets the default schema used to create a new language profile.
+	///
+	/// Endpoint: `GET /api/v3/languageprofile/schema`
+	///
+	/// Result: a language profile populated with default values.
+	@available(*, deprecated, message: "Language profiles were removed in Sonarr v4")
+	static var languageProfileSchema: SonarrRequest<LanguageProfileResource> {
+		SonarrRequest(method: .get, path: "api/v3/languageprofile/schema")
+	}
 }
 
 public extension SonarrRequest where SonarrResponse == EmptyResponse {
