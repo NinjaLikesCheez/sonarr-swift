@@ -45,4 +45,10 @@ struct LanguageProfileRequestsTests {
 			try await client.request(.deleteLanguageProfile(id: id))
 		}
 	}
+
+	@available(*, deprecated)
+	@Test
+	func test_languageProfileSchema() async throws {
+		_ = try await client.request(.languageProfileSchema)
+	}
 }
