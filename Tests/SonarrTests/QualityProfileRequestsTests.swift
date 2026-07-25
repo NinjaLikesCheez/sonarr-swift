@@ -85,6 +85,13 @@ struct QualityProfileRequestsTests {
 		#expect(request.path == "api/v3/qualityprofile/1")
 	}
 
+	@Test func qualityProfileSchemaRequestConstruction() {
+		let request = SonarrRequest.qualityProfileSchema
+
+		#expect(request.method == .get)
+		#expect(request.path == "api/v3/qualityprofile/schema")
+	}
+
 	@Test func qualityProfileResourceDecodingWithNestedGroups() throws {
 		let json = Data(
 			#"""
