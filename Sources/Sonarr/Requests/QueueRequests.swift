@@ -107,6 +107,17 @@ public extension SonarrRequest where SonarrResponse == [QueueResource] {
 	}
 }
 
+public extension SonarrRequest where SonarrResponse == QueueStatusResource {
+	/// Gets a summary of the download queue's overall health.
+	///
+	/// Endpoint: `GET /api/v3/queue/status`
+	///
+	/// Result: the current queue status summary.
+	static var queueStatus: SonarrRequest<QueueStatusResource> {
+		SonarrRequest(method: .get, path: "api/v3/queue/status")
+	}
+}
+
 public extension SonarrRequest where SonarrResponse == EmptyResponse {
 	/// Removes an item from the download queue.
 	///

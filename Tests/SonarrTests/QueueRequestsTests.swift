@@ -135,6 +135,63 @@ struct QueueRequestsTests {
 		#expect(items.first?.episodeId == 10)
 	}
 
+	@Test func queueStatusRequestConstruction() {
+		let request = SonarrRequest.queueStatus
+
+		#expect(request.method == .get)
+		#expect(request.path == "api/v3/queue/status")
+	}
+
+	@Test func queueStatusDecoding() throws {
+		let json = Data(
+			#"""
+			{
+				"id": 1,
+				"totalCount": 5,
+				"count": 4,
+				"unknownCount": 1,
+				"errors": true,
+				"warnings": false,
+				"unknownErrors": false,
+				"unknownWarnings": true
+			}
+			"""#.utf8
+		)
+
+		let status = try client.decoder.decode(QueueStatusResource.self, from: json)
+
+		#expect(status.id == 1)
+		#expect(status.totalCount == 5)
+		#expect(status.count == 4)
+		#expect(status.unknownCount == 1)
+		#expect(status.errors == true)
+		#expect(status.warnings == false)
+		#expect(status.unknownErrors == false)
+		#expect(status.unknownWarnings == true)
+	}
+
+	@Test func queueStatusDecodingWithoutId() throws {
+		// Sonarr's live API omits `id` from this endpoint's response.
+		let json = Data(
+			#"""
+			{
+				"totalCount": 0,
+				"count": 0,
+				"unknownCount": 0,
+				"errors": false,
+				"warnings": false,
+				"unknownErrors": false,
+				"unknownWarnings": false
+			}
+			"""#.utf8
+		)
+
+		let status = try client.decoder.decode(QueueStatusResource.self, from: json)
+
+		#expect(status.id == nil)
+		#expect(status.totalCount == 0)
+	}
+
 	@Test func deleteQueueItemRequestConstructionWithDefaults() {
 		let request = SonarrRequest.deleteQueueItem(id: 42)
 
