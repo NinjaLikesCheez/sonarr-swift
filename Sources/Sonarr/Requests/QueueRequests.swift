@@ -135,4 +135,26 @@ public extension SonarrRequest where SonarrResponse == EmptyResponse {
 			body: { JSONBody(QueueBulkResource(ids: ids)) }
 		)
 	}
+
+	/// Triggers an immediate download attempt for a queued item.
+	///
+	/// Endpoint: `POST /api/v3/queue/grab/{id}`
+	///
+	/// - Parameter id: The identifier of the queue item to grab.
+	static func grabQueueItem(id: Int) -> SonarrRequest<EmptyResponse> {
+		SonarrRequest(method: .post, path: "api/v3/queue/grab/\(id)")
+	}
+
+	/// Triggers an immediate download attempt for multiple queued items in a single request.
+	///
+	/// Endpoint: `POST /api/v3/queue/grab/bulk`
+	///
+	/// - Parameter ids: The identifiers of the queue items to grab.
+	static func grabQueueItems(ids: [Int]) -> SonarrRequest<EmptyResponse> {
+		SonarrRequest(
+			method: .post,
+			path: "api/v3/queue/grab/bulk",
+			body: { JSONBody(QueueBulkResource(ids: ids)) }
+		)
+	}
 }

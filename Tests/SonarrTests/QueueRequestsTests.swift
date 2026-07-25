@@ -112,6 +112,26 @@ struct QueueRequestsTests {
 		)
 	}
 
+	@Test func grabQueueItemRequestConstruction() {
+		let request = SonarrRequest.grabQueueItem(id: 42)
+
+		#expect(request.method == .post)
+		#expect(request.path == "api/v3/queue/grab/42")
+	}
+
+	@Test func grabQueueItemsRequestConstruction() throws {
+		let request = SonarrRequest.grabQueueItems(ids: [1, 2, 3])
+
+		#expect(request.method == .post)
+		#expect(request.path == "api/v3/queue/grab/bulk")
+
+		let body = try #require(try request.body())
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: [Int]])
+
+		#expect(json["ids"] == [1, 2, 3])
+	}
+
 	@Test func deleteQueueItemsRequestConstruction() throws {
 		let request = SonarrRequest.deleteQueueItems(ids: [1, 2, 3], blocklist: true)
 
