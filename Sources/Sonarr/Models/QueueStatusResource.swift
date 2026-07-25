@@ -1,7 +1,9 @@
 /// A summary of the download queue's overall health.
 public struct QueueStatusResource: Equatable, Decodable, Sendable {
-	/// Sonarr's internal identifier for this status snapshot.
-	public let id: Int
+	// Sonarr's live API omits `id` from this endpoint's response despite the OpenAPI spec
+	// declaring it non-nullable, since this resource isn't backed by a persisted record.
+	/// Sonarr's internal identifier for this status snapshot, if any.
+	public let id: Int?
 	/// The total number of items in the queue.
 	public let totalCount: Int
 	/// The number of items counted towards the queue badge.
