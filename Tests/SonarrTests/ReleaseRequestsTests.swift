@@ -62,6 +62,17 @@ struct ReleaseRequestsTests {
 		#expect(decoded == sampleRelease)
 	}
 
+	@Test func pushReleaseRequestConstruction() throws {
+		let request = SonarrRequest.pushRelease(sampleRelease)
+
+		#expect(request.method == .post)
+		#expect(request.path == "api/v3/release/push")
+
+		let body = try #require(try request.body())
+		let decoded = try client.decoder.decode(ReleaseResource.self, from: try body.encode())
+		#expect(decoded == sampleRelease)
+	}
+
 	@Test func releaseResourceDecoding() throws {
 		let json = Data(
 			#"""
