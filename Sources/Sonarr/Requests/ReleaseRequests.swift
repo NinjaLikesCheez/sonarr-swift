@@ -33,6 +33,17 @@ public extension SonarrRequest where SonarrResponse == [ReleaseResource] {
 
 		return SonarrRequest(method: .get, path: "api/v3/release", queryItems: queryItems)
 	}
+
+	/// Pushes a release directly for Sonarr to evaluate and potentially grab, bypassing indexer search.
+	///
+	/// Endpoint: `POST /api/v3/release/push`
+	///
+	/// Result: the release as evaluated by Sonarr, along with its decision.
+	///
+	/// - Parameter release: The release to push.
+	static func pushRelease(_ release: ReleaseResource) -> SonarrRequest<[ReleaseResource]> {
+		SonarrRequest(method: .post, path: "api/v3/release/push", body: { JSONBody(release) })
+	}
 }
 
 public extension SonarrRequest where SonarrResponse == EmptyResponse {
