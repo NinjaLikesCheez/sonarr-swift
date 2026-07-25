@@ -21,4 +21,16 @@ struct QueueRequestsTests {
 	func test_deleteQueueItems_empty() async throws {
 		try await client.request(.deleteQueueItems(ids: []))
 	}
+
+	@Test
+	func test_grabQueueItem_notFound() async throws {
+		await #expect(throws: (Sonarr.Error).self) {
+			try await client.request(.grabQueueItem(id: Int.max))
+		}
+	}
+
+	@Test
+	func test_grabQueueItems_empty() async throws {
+		try await client.request(.grabQueueItems(ids: []))
+	}
 }
