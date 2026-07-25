@@ -50,6 +50,15 @@ public extension SonarrRequest where SonarrResponse == QualityProfileResource {
 	static func qualityProfile(id: Int) -> SonarrRequest<QualityProfileResource> {
 		SonarrRequest(method: .get, path: "api/v3/qualityprofile/\(id)")
 	}
+
+	/// Gets the default schema for a new quality profile.
+	///
+	/// Endpoint: `GET /api/v3/qualityprofile/schema`
+	///
+	/// Result: a quality profile template with the full set of qualities, ready to be customized and created.
+	static var qualityProfileSchema: SonarrRequest<QualityProfileResource> {
+		SonarrRequest(method: .get, path: "api/v3/qualityprofile/schema")
+	}
 }
 
 public extension SonarrRequest where SonarrResponse == EmptyResponse {

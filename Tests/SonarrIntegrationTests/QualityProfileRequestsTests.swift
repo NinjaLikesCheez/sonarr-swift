@@ -4,6 +4,14 @@ import Testing
 @Suite("QualityProfile Requests", .serialized)
 struct QualityProfileRequestsTests {
 	@Test
+	func test_qualityProfileSchema() async throws {
+		let schema = try await client.request(.qualityProfileSchema)
+
+		#expect(schema.name != nil)
+		#expect(schema.items?.isEmpty == false)
+	}
+
+	@Test
 	func test_addQualityProfile_qualityProfiles_qualityProfile_updateQualityProfile_deleteQualityProfile()
 		async throws
 	{
