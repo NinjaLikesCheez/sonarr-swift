@@ -65,4 +65,40 @@ struct SeriesRequestsTests {
 
 		try await client.request(.deleteRootFolder(id: rootFolderId))
 	}
+
+	@Test
+	func test_editSeries_deleteSeriesInBulk() async throws {
+		let qualityProfiles = try await client.request(.qualityProfiles)
+		let qualityProfile = try #require(qualityProfiles.first)
+		let qualityProfileId = try #require(qualityProfile.id)
+
+		let rootFolder = try await client.request(.addRootFolder(RootFolderResource(path: "/media")))
+		let rootFolderId = try #require(rootFolder.id)
+
+		let created = try await client.request(
+			.addSeries(
+				SeriesResource(
+					title: "Futurama",
+					qualityProfileId: qualityProfileId,
+					monitored: false,
+					tvdbId: 73871,
+					rootFolderPath: "/media",
+					addOptions: AddSeriesOptions(monitor: MonitorTypes.none, searchForMissingEpisodes: false)
+				)
+			)
+		)
+		let id = try #require(created.id)
+
+		try await client.request(.editSeries(SeriesEditorResource(seriesIds: [id], monitored: true)))
+
+		let edited = try await client.request(.series(id: id))
+		#expect(edited.monitored == true)
+
+		try await client.request(.deleteSeries(inBulk: SeriesEditorResource(seriesIds: [id], deleteFiles: false)))
+
+		let remaining = try await client.request(.series())
+		#expect(!remaining.contains(where: { $0.id == id }))
+
+		try await client.request(.deleteRootFolder(id: rootFolderId))
+	}
 }
