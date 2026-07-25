@@ -7,12 +7,14 @@ struct RemotePathMappingRequestsTests {
 	func test_addRemotePathMapping_remotePathMappings_remotePathMapping_updateRemotePathMapping_deleteRemotePathMapping()
 		async throws
 	{
+		// Sonarr validates that `localPath` exists on the server's filesystem, so this must be a
+		// real path inside the test container rather than an arbitrary string.
 		let created = try await client.request(
 			.addRemotePathMapping(
 				RemotePathMappingResource(
 					host: "integration-test-host",
 					remotePath: "/remote/downloads/",
-					localPath: "/local/downloads/"
+					localPath: "/config"
 				)
 			)
 		)
@@ -31,13 +33,13 @@ struct RemotePathMappingRequestsTests {
 				id: id,
 				RemotePathMappingResource(
 					id: id,
-					host: created.host,
+					host: "integration-test-host-renamed",
 					remotePath: created.remotePath,
-					localPath: "/local/downloads-renamed/"
+					localPath: "/config"
 				)
 			)
 		)
-		#expect(updated.localPath == "/local/downloads-renamed/")
+		#expect(updated.host == "integration-test-host-renamed")
 
 		try await client.request(.deleteRemotePathMapping(id: id))
 
