@@ -69,6 +69,72 @@ struct QueueRequestsTests {
 		)
 	}
 
+	@Test func queueDetailsRequestConstructionWithDefaults() {
+		let request = SonarrRequest.queueDetails()
+
+		#expect(request.method == .get)
+		#expect(request.path == "api/v3/queue/details")
+
+		let urlRequest = URLRequest(url: URL(string: "http://localhost:8989/api/v3/queue/details")!)
+		let prepared = request.prepare(urlRequest)
+		let components = URLComponents(url: prepared.url!, resolvingAgainstBaseURL: false)
+
+		#expect(
+			components?.queryItems == [
+				URLQueryItem(name: "includeSeries", value: "false"),
+				URLQueryItem(name: "includeEpisode", value: "false"),
+			]
+		)
+	}
+
+	@Test func queueDetailsRequestConstructionWithFilters() {
+		let request = SonarrRequest.queueDetails(
+			seriesId: 5,
+			episodeIds: [10, 11],
+			includeSeries: true,
+			includeEpisode: true
+		)
+
+		let urlRequest = URLRequest(url: URL(string: "http://localhost:8989/api/v3/queue/details")!)
+		let prepared = request.prepare(urlRequest)
+		let components = URLComponents(url: prepared.url!, resolvingAgainstBaseURL: false)
+
+		#expect(
+			components?.queryItems == [
+				URLQueryItem(name: "includeSeries", value: "true"),
+				URLQueryItem(name: "includeEpisode", value: "true"),
+				URLQueryItem(name: "seriesId", value: "5"),
+				URLQueryItem(name: "episodeIds", value: "10"),
+				URLQueryItem(name: "episodeIds", value: "11"),
+			]
+		)
+	}
+
+	@Test func queueDetailsDecoding() throws {
+		let json = Data(
+			#"""
+			[
+				{
+					"id": 1,
+					"seriesId": 5,
+					"episodeId": 10,
+					"customFormatScore": 0,
+					"size": 0,
+					"downloadClientHasPostImportCategory": false,
+					"episodeHasFile": false
+				}
+			]
+			"""#.utf8
+		)
+
+		let items = try client.decoder.decode([QueueResource].self, from: json)
+
+		#expect(items.count == 1)
+		#expect(items.first?.id == 1)
+		#expect(items.first?.seriesId == 5)
+		#expect(items.first?.episodeId == 10)
+	}
+
 	@Test func deleteQueueItemRequestConstructionWithDefaults() {
 		let request = SonarrRequest.deleteQueueItem(id: 42)
 

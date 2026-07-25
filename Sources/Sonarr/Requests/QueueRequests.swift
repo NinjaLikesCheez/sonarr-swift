@@ -74,6 +74,39 @@ public extension SonarrRequest where SonarrResponse == PagingResource<QueueResou
 	}
 }
 
+public extension SonarrRequest where SonarrResponse == [QueueResource] {
+	/// Gets detailed queue information for specific series or episodes.
+	///
+	/// Endpoint: `GET /api/v3/queue/details`
+	///
+	/// Result: the queue items matching the given filters.
+	///
+	/// - Parameters:
+	///   - seriesId: Restricts results to items belonging to the given series.
+	///   - episodeIds: Restricts results to items belonging to the given episodes.
+	///   - includeSeries: Whether to attach series details to each item.
+	///   - includeEpisode: Whether to attach episode details to each item.
+	static func queueDetails(
+		seriesId: Int? = nil,
+		episodeIds: [Int] = [],
+		includeSeries: Bool = false,
+		includeEpisode: Bool = false
+	) -> SonarrRequest<[QueueResource]> {
+		var queryItems: [URLQueryItem] = [
+			URLQueryItem(name: "includeSeries", value: String(includeSeries)),
+			URLQueryItem(name: "includeEpisode", value: String(includeEpisode)),
+		]
+
+		if let seriesId {
+			queryItems.append(URLQueryItem(name: "seriesId", value: String(seriesId)))
+		}
+
+		queryItems += episodeIds.map { URLQueryItem(name: "episodeIds", value: String($0)) }
+
+		return SonarrRequest(method: .get, path: "api/v3/queue/details", queryItems: queryItems)
+	}
+}
+
 public extension SonarrRequest where SonarrResponse == EmptyResponse {
 	/// Removes an item from the download queue.
 	///
