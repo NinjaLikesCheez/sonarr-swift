@@ -17,7 +17,7 @@ public struct ReleaseResource: Equatable, Codable, Sendable {
 	/// The age of the release, in minutes.
 	public let ageMinutes: Double?
 	/// The size of the release, in bytes.
-	public let size: Int?
+	public let size: Int64?
 	/// The unique identifier of the indexer the release came from.
 	public let indexerId: Int?
 	/// The name of the indexer the release came from.
@@ -196,7 +196,7 @@ public struct ReleaseResource: Equatable, Codable, Sendable {
 		age: Int? = nil,
 		ageHours: Double? = nil,
 		ageMinutes: Double? = nil,
-		size: Int? = nil,
+		size: Int64? = nil,
 		indexerId: Int? = nil,
 		indexer: String? = nil,
 		releaseGroup: String? = nil,
