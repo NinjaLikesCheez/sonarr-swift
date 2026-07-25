@@ -16,14 +16,18 @@ fi
 
 git clean -dffx "${DOCKER_VOLUME_ROOT}"
 git checkout "${DOCKER_VOLUME_ROOT}"
-mkdir -p "${DOCKER_VOLUME_ROOT}/config"
+mkdir -p "${DOCKER_VOLUME_ROOT}/config" "${DOCKER_VOLUME_ROOT}/media"
 
+# /media is a real mounted directory so tests that need a path Sonarr will accept (root folders,
+# remote path mappings, rename previews, etc.) can point at it instead of guessing at one that
+# happens to exist inside the container - we've hit that mismatch more than once.
 "${DOCKER}" run \
   --name=SonarrIntegrationTests \
   -p 127.0.0.1:8989:8989 \
   -e PUID="$(id -u)" \
   -e PGID="$(id -g)" \
   -v "./${DOCKER_VOLUME_ROOT}/config:/config" \
+  -v "./${DOCKER_VOLUME_ROOT}/media:/media" \
   -d \
   "${DOCKER_ADDITIONAL_ARGS[@]}" \
   linuxserver/sonarr
