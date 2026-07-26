@@ -26,7 +26,7 @@ public final class Sonarr: Client, Sendable {
 
 	public let prepare: @Sendable (URLRequest) -> URLRequest
 
-	public let session: URLSession = .shared
+	public let session: URLSession
 
 	private let logger = Logger(label: "Sonarr")
 
@@ -49,10 +49,18 @@ public final class Sonarr: Client, Sendable {
 	///   - baseURL: The URL of the Sonarr server, e.g. `http://localhost:8989`.
 	///   - apiKey: The API key used to authenticate requests.
 	///   - basicAuthentication: Optional basic authentication added to the Authorization header.
-	public init(baseURL: URL, apiKey: String, basicAuthentication: BasicAuthentication? = nil) {
+	///   - session: The `URLSession` requests are sent through. Defaults to `.shared`; supply a custom
+	///   session to trust a self-signed certificate, set a longer timeout, or stub network calls in tests.
+	public init(
+		baseURL: URL,
+		apiKey: String,
+		basicAuthentication: BasicAuthentication? = nil,
+		session: URLSession = .shared
+	) {
 		self.baseURL = baseURL
 		self.apiKey = apiKey
 		self.basicAuthentication = basicAuthentication
+		self.session = session
 
 		defaultHeaders = [
 			"X-Api-Key": apiKey,
