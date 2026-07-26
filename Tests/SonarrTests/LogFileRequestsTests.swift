@@ -41,6 +41,37 @@ struct LogFileRequestsTests {
 		#expect(decoded == contents)
 	}
 
+	@Test func updateLogFilesRequestConstruction() {
+		let request = SonarrRequest.updateLogFiles
+
+		#expect(request.method == .get)
+		#expect(request.path == "api/v3/log/file/update")
+	}
+
+	@Test func updateLogFileRequestConstruction() {
+		let request = SonarrRequest.updateLogFile(filename: "update.1.txt")
+
+		#expect(request.method == .get)
+		#expect(request.path == "api/v3/log/file/update/update.1.txt")
+	}
+
+	@Test func updateLogFileTransformDecodesRawTextAsString() throws {
+		let request = SonarrRequest.updateLogFile(filename: "update.1.txt")
+		let transform = try #require(request.transform)
+
+		let response = HTTPURLResponse(
+			url: URL(string: "http://localhost:8989/api/v3/log/file/update/update.1.txt")!,
+			statusCode: 200,
+			httpVersion: nil,
+			headerFields: nil
+		)!
+
+		let contents = "2024-01-01 12:00:00.0|Info|Sonarr.Update|Starting update"
+		let decoded = try transform(Data(contents.utf8), response)
+
+		#expect(decoded == contents)
+	}
+
 	@Test func logFileResourceListDecoding() throws {
 		let json = Data(
 			#"""
