@@ -65,4 +65,67 @@ struct SeriesRequestsTests {
 
 		try await client.request(.deleteRootFolder(id: rootFolderId))
 	}
+
+	@Test
+	func test_editSeries_deleteSeriesInBulk() async throws {
+		let qualityProfiles = try await client.request(.qualityProfiles)
+		let qualityProfile = try #require(qualityProfiles.first)
+		let qualityProfileId = try #require(qualityProfile.id)
+
+		let rootFolder = try await client.request(.addRootFolder(RootFolderResource(path: "/media")))
+		let rootFolderId = try #require(rootFolder.id)
+
+		let created = try await client.request(
+			.addSeries(
+				SeriesResource(
+					title: "Futurama",
+					qualityProfileId: qualityProfileId,
+					monitored: false,
+					tvdbId: 73871,
+					rootFolderPath: "/media",
+					addOptions: AddSeriesOptions(monitor: MonitorTypes.none, searchForMissingEpisodes: false)
+				)
+			)
+		)
+		let id = try #require(created.id)
+
+		try await client.request(.editSeries(SeriesEditorResource(seriesIds: [id], monitored: true)))
+
+		// The series editor applies its changes via an async command, so the write isn't
+		// guaranteed to be visible immediately - poll briefly rather than asserting on the very
+		// next read.
+		let edited = try await poll {
+			try await client.request(.series(id: id))
+		} until: {
+			$0.monitored == true
+		}
+		#expect(edited.monitored == true)
+
+		try await client.request(.deleteSeries(inBulk: SeriesEditorResource(seriesIds: [id], deleteFiles: false)))
+
+		let remaining = try await poll {
+			try await client.request(.series())
+		} until: {
+			!$0.contains(where: { $0.id == id })
+		}
+		#expect(!remaining.contains(where: { $0.id == id }))
+
+		try await client.request(.deleteRootFolder(id: rootFolderId))
+	}
+}
+
+/// Retries `operation` until `condition` is satisfied or a fixed number of attempts is exhausted,
+/// returning the last result either way.
+private func poll<T>(
+	attempts: Int = 10,
+	delayNanoseconds: UInt64 = 200_000_000,
+	_ operation: () async throws -> T,
+	until condition: (T) -> Bool
+) async throws -> T {
+	var result = try await operation()
+	for _ in 1..<attempts where !condition(result) {
+		try await Task.sleep(nanoseconds: delayNanoseconds)
+		result = try await operation()
+	}
+	return result
 }

@@ -103,4 +103,22 @@ public extension SonarrRequest where SonarrResponse == EmptyResponse {
 			]
 		)
 	}
+
+	/// Bulk-edits multiple series at once.
+	///
+	/// Endpoint: `PUT /api/v3/series/editor`
+	///
+	/// - Parameter seriesEditor: The changes to apply to the given series.
+	static func editSeries(_ seriesEditor: SeriesEditorResource) -> SonarrRequest<EmptyResponse> {
+		SonarrRequest(method: .put, path: "api/v3/series/editor", body: { JSONBody(seriesEditor) })
+	}
+
+	/// Bulk-deletes multiple series at once.
+	///
+	/// Endpoint: `DELETE /api/v3/series/editor`
+	///
+	/// - Parameter seriesEditor: The series to delete and how to delete them.
+	static func deleteSeries(inBulk seriesEditor: SeriesEditorResource) -> SonarrRequest<EmptyResponse> {
+		SonarrRequest(method: .delete, path: "api/v3/series/editor", body: { JSONBody(seriesEditor) })
+	}
 }

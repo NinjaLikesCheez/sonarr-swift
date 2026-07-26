@@ -263,4 +263,46 @@ struct SeriesRequestsTests {
 		#expect(series.count == 1)
 		#expect(series.first?.title == "Some Show")
 	}
+
+	@Test func editSeriesRequestConstruction() throws {
+		let seriesEditor = SeriesEditorResource(
+			seriesIds: [1, 2],
+			monitored: true,
+			qualityProfileId: 3,
+			tags: [1],
+			applyTags: .add,
+			moveFiles: true
+		)
+		let request = SonarrRequest.editSeries(seriesEditor)
+
+		#expect(request.method == .put)
+		#expect(request.path == "api/v3/series/editor")
+
+		let body = try #require(try request.body())
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["seriesIds"] as? [Int] == [1, 2])
+		#expect(json["monitored"] as? Bool == true)
+		#expect(json["qualityProfileId"] as? Int == 3)
+		#expect(json["tags"] as? [Int] == [1])
+		#expect(json["applyTags"] as? String == "add")
+		#expect(json["moveFiles"] as? Bool == true)
+	}
+
+	@Test func deleteSeriesInBulkRequestConstruction() throws {
+		let seriesEditor = SeriesEditorResource(seriesIds: [1, 2], deleteFiles: true, addImportListExclusion: true)
+		let request = SonarrRequest.deleteSeries(inBulk: seriesEditor)
+
+		#expect(request.method == .delete)
+		#expect(request.path == "api/v3/series/editor")
+
+		let body = try #require(try request.body())
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["seriesIds"] as? [Int] == [1, 2])
+		#expect(json["deleteFiles"] as? Bool == true)
+		#expect(json["addImportListExclusion"] as? Bool == true)
+	}
 }
