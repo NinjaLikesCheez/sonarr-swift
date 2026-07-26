@@ -5,9 +5,9 @@ public struct BackupResource: Equatable, Decodable, Sendable {
 	/// The backup's unique identifier.
 	public let id: Int
 	/// The backup's file name.
-	public let name: String
+	public let name: String?
 	/// The path to the backup file, relative to the server.
-	public let path: String
+	public let path: String?
 	/// How the backup was created.
 	public let type: BackupType
 	/// The size of the backup file, in bytes.

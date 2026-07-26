@@ -5,9 +5,9 @@ public struct CommandResource: Equatable, Decodable, Sendable {
 	/// The command's unique identifier.
 	public let id: Int
 	/// The command's type name, e.g. `RefreshSeries`.
-	public let name: String
+	public let name: String?
 	/// A human-readable version of `name`, e.g. `Refresh Series`.
-	public let commandName: String
+	public let commandName: String?
 	/// A status message describing the command's current progress, if any.
 	public let message: String?
 	/// The command's scheduling priority.
