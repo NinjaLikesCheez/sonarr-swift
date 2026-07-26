@@ -34,7 +34,7 @@ struct MissingRequestsTests {
 			page: 2,
 			pageSize: 25,
 			sortKey: "airDateUtc",
-			sortDirection: "descending",
+			sortDirection: .descending,
 			includeSeries: true,
 			includeImages: true,
 			monitored: false
@@ -97,9 +97,9 @@ struct MissingRequestsTests {
 		let page = try client.decoder.decode(PagingResource<EpisodeResource>.self, from: json)
 
 		#expect(page.page == 1)
-		#expect(page.records.count == 1)
+		#expect(page.records?.count == 1)
 
-		let episode = try #require(page.records.first)
+		let episode = try #require(page.records?.first)
 		#expect(episode.id == 1)
 		#expect(episode.seriesId == 5)
 		#expect(episode.hasFile == false)

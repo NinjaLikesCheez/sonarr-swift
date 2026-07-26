@@ -39,7 +39,7 @@ struct ImportListExclusionRequestsTests {
 			page: 2,
 			pageSize: 25,
 			sortKey: "title",
-			sortDirection: "descending"
+			sortDirection: .descending
 		)
 
 		let urlRequest = URLRequest(url: URL(string: "http://localhost:8989/api/v3/importlistexclusion/paged")!)

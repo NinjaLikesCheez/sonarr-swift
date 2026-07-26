@@ -12,14 +12,14 @@ public extension SonarrRequest where SonarrResponse == PagingResource<Blocklist>
 	///   - page: The page number to fetch, 1-indexed.
 	///   - pageSize: The number of records per page.
 	///   - sortKey: The field to sort by, e.g. `date`.
-	///   - sortDirection: The direction to sort in, e.g. `ascending` or `descending`.
+	///   - sortDirection: The direction to sort in.
 	///   - seriesIds: Restricts results to entries belonging to the given series.
 	///   - protocols: Restricts results to entries fetched via the given download protocols.
 	static func blocklist(
 		page: Int? = nil,
 		pageSize: Int? = nil,
 		sortKey: String? = nil,
-		sortDirection: String? = nil,
+		sortDirection: SortDirection? = nil,
 		seriesIds: [Int] = [],
 		protocols: [DownloadProtocol] = []
 	) -> SonarrRequest<PagingResource<Blocklist>> {
@@ -38,7 +38,7 @@ public extension SonarrRequest where SonarrResponse == PagingResource<Blocklist>
 		}
 
 		if let sortDirection {
-			queryItems.append(URLQueryItem(name: "sortDirection", value: sortDirection))
+			queryItems.append(URLQueryItem(name: "sortDirection", value: sortDirection.rawValue))
 		}
 
 		queryItems += seriesIds.map { URLQueryItem(name: "seriesIds", value: String($0)) }

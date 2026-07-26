@@ -24,7 +24,7 @@ struct LogRequestsTests {
 
 	@Test func logsRequestConstructionWithFilters() {
 		let request = SonarrRequest.logs(
-			page: 2, pageSize: 25, sortKey: "time", sortDirection: "descending", level: "error")
+			page: 2, pageSize: 25, sortKey: "time", sortDirection: .descending, level: "error")
 
 		#expect(request.method == .get)
 		#expect(request.path == "api/v3/log")
@@ -72,9 +72,9 @@ struct LogRequestsTests {
 		let page = try client.decoder.decode(PagingResource<LogResource>.self, from: json)
 
 		#expect(page.page == 1)
-		#expect(page.records.count == 1)
+		#expect(page.records?.count == 1)
 
-		let log = try #require(page.records.first)
+		let log = try #require(page.records?.first)
 		#expect(log.id == 1)
 		#expect(log.time == Date(timeIntervalSince1970: 1_704_110_400))
 		#expect(log.level == "info")

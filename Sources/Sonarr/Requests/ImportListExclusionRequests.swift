@@ -27,12 +27,12 @@ public extension SonarrRequest where SonarrResponse == PagingResource<ImportList
 	///   - page: The page number to fetch, 1-indexed.
 	///   - pageSize: The number of records per page.
 	///   - sortKey: The field to sort by, e.g. `title`.
-	///   - sortDirection: The direction to sort in, e.g. `ascending` or `descending`.
+	///   - sortDirection: The direction to sort in.
 	static func importListExclusions(
 		page: Int? = nil,
 		pageSize: Int? = nil,
 		sortKey: String? = nil,
-		sortDirection: String? = nil
+		sortDirection: SortDirection? = nil
 	) -> SonarrRequest<PagingResource<ImportListExclusionResource>> {
 		var queryItems: [URLQueryItem] = []
 
@@ -49,7 +49,7 @@ public extension SonarrRequest where SonarrResponse == PagingResource<ImportList
 		}
 
 		if let sortDirection {
-			queryItems.append(URLQueryItem(name: "sortDirection", value: sortDirection))
+			queryItems.append(URLQueryItem(name: "sortDirection", value: sortDirection.rawValue))
 		}
 
 		return SonarrRequest(method: .get, path: "api/v3/importlistexclusion/paged", queryItems: queryItems)

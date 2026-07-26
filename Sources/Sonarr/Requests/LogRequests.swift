@@ -15,13 +15,13 @@ public extension SonarrRequest where SonarrResponse == PagingResource<LogResourc
 	///   - page: The page number to fetch, 1-indexed.
 	///   - pageSize: The number of records per page.
 	///   - sortKey: The field to sort by, e.g. `time`.
-	///   - sortDirection: The direction to sort in, e.g. `ascending` or `descending`.
+	///   - sortDirection: The direction to sort in.
 	///   - level: Restricts results to entries at or above this severity, e.g. `info` or `error`.
 	static func logs(
 		page: Int? = nil,
 		pageSize: Int? = nil,
 		sortKey: String? = nil,
-		sortDirection: String? = nil,
+		sortDirection: SortDirection? = nil,
 		level: String? = nil
 	) -> SonarrRequest<PagingResource<LogResource>> {
 		var queryItems: [URLQueryItem] = []
@@ -39,7 +39,7 @@ public extension SonarrRequest where SonarrResponse == PagingResource<LogResourc
 		}
 
 		if let sortDirection {
-			queryItems.append(URLQueryItem(name: "sortDirection", value: sortDirection))
+			queryItems.append(URLQueryItem(name: "sortDirection", value: sortDirection.rawValue))
 		}
 
 		if let level {

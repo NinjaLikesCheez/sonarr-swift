@@ -16,7 +16,7 @@ public extension SonarrRequest where SonarrResponse == PagingResource<EpisodeRes
 	///   - page: The page number to fetch, 1-indexed.
 	///   - pageSize: The number of records per page.
 	///   - sortKey: The field to sort by, e.g. `airDateUtc`.
-	///   - sortDirection: The direction to sort in, e.g. `ascending` or `descending`.
+	///   - sortDirection: The direction to sort in.
 	///   - includeSeries: Whether to attach series details to each episode.
 	///   - includeImages: Whether to attach series/episode artwork to each episode.
 	///   - monitored: Restricts results to monitored (or unmonitored) episodes. Defaults to `true`.
@@ -24,7 +24,7 @@ public extension SonarrRequest where SonarrResponse == PagingResource<EpisodeRes
 		page: Int? = nil,
 		pageSize: Int? = nil,
 		sortKey: String? = nil,
-		sortDirection: String? = nil,
+		sortDirection: SortDirection? = nil,
 		includeSeries: Bool = false,
 		includeImages: Bool = false,
 		monitored: Bool = true
@@ -48,7 +48,7 @@ public extension SonarrRequest where SonarrResponse == PagingResource<EpisodeRes
 		}
 
 		if let sortDirection {
-			queryItems.append(URLQueryItem(name: "sortDirection", value: sortDirection))
+			queryItems.append(URLQueryItem(name: "sortDirection", value: sortDirection.rawValue))
 		}
 
 		return SonarrRequest(method: .get, path: "api/v3/wanted/missing", queryItems: queryItems)
