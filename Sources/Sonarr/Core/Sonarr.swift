@@ -1,6 +1,5 @@
 @_exported import APIClient
 import Foundation
-import Logging
 
 // URLSession exists in FoundationNetworking on Linux
 #if canImport(FoundationNetworking)
@@ -28,11 +27,12 @@ public final class Sonarr: Client, Sendable {
 
 	public let session: URLSession
 
-	private let logger = Logger(label: "Sonarr")
-
 	// ISO8601DateFormatter is documented as thread-safe, so sharing immutable instances across
-	// concurrent decodes is fine even though the type isn't marked Sendable.
-	nonisolated(unsafe) private static let iso8601Formatter: ISO8601DateFormatter = {
+	// concurrent decodes/encodes is fine even though the type isn't marked Sendable. Shared (rather than
+	// `internal`-only within this file) since request factories that append a date to a query string
+	// (e.g. CalendarRequests, HistoryRequests) need the same ISO 8601 formatting the decoder uses, and
+	// constructing a fresh ISO8601DateFormatter per call is needless allocation.
+	nonisolated(unsafe) static let iso8601Formatter: ISO8601DateFormatter = {
 		let formatter = ISO8601DateFormatter()
 		formatter.formatOptions = [.withInternetDateTime]
 		return formatter

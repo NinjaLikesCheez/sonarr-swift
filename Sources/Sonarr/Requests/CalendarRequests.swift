@@ -37,11 +37,11 @@ public extension SonarrRequest where SonarrResponse == [EpisodeResource] {
 		]
 
 		if let start {
-			queryItems.append(URLQueryItem(name: "start", value: ISO8601DateFormatter().string(from: start)))
+			queryItems.append(URLQueryItem(name: "start", value: Sonarr.iso8601Formatter.string(from: start)))
 		}
 
 		if let end {
-			queryItems.append(URLQueryItem(name: "end", value: ISO8601DateFormatter().string(from: end)))
+			queryItems.append(URLQueryItem(name: "end", value: Sonarr.iso8601Formatter.string(from: end)))
 		}
 
 		if !tags.isEmpty {
