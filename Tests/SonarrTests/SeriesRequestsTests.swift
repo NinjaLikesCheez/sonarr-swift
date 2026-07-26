@@ -60,6 +60,17 @@ struct SeriesRequestsTests {
 		)
 	}
 
+	@Test func importSeriesRequestConstruction() throws {
+		let request = SonarrRequest.importSeries([sampleSeries])
+
+		#expect(request.method == .post)
+		#expect(request.path == "api/v3/series/import")
+
+		let body = try #require(try request.body())
+		let decoded = try client.decoder.decode([SeriesResource].self, from: try body.encode())
+		#expect(decoded == [sampleSeries])
+	}
+
 	@Test func seriesByIdRequestConstructionWithDefaults() {
 		let request = SonarrRequest.series(id: 1)
 

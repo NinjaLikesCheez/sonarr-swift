@@ -25,6 +25,17 @@ public extension SonarrRequest where SonarrResponse == [SeriesResource] {
 
 		return SonarrRequest(method: .get, path: "api/v3/series", queryItems: queryItems)
 	}
+
+	/// Bulk-imports existing series from disk.
+	///
+	/// Endpoint: `POST /api/v3/series/import`
+	///
+	/// Result: the imported series.
+	///
+	/// - Parameter series: The series to import.
+	static func importSeries(_ series: [SeriesResource]) -> SonarrRequest<[SeriesResource]> {
+		SonarrRequest(method: .post, path: "api/v3/series/import", body: { JSONBody(series) })
+	}
 }
 
 public extension SonarrRequest where SonarrResponse == SeriesResource {
