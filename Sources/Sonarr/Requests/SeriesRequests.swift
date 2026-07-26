@@ -36,6 +36,23 @@ public extension SonarrRequest where SonarrResponse == [SeriesResource] {
 	static func importSeries(_ series: [SeriesResource]) -> SonarrRequest<[SeriesResource]> {
 		SonarrRequest(method: .post, path: "api/v3/series/import", body: { JSONBody(series) })
 	}
+
+	/// Searches TheTVDB for series matching a search term.
+	///
+	/// Endpoint: `GET /api/v3/series/lookup`
+	///
+	/// Result: the matching series, not yet added to Sonarr.
+	///
+	/// - Parameter term: The search term, e.g. a series title.
+	static func lookupSeries(term: String? = nil) -> SonarrRequest<[SeriesResource]> {
+		var queryItems: [URLQueryItem] = []
+
+		if let term {
+			queryItems.append(URLQueryItem(name: "term", value: term))
+		}
+
+		return SonarrRequest(method: .get, path: "api/v3/series/lookup", queryItems: queryItems)
+	}
 }
 
 public extension SonarrRequest where SonarrResponse == SeriesResource {

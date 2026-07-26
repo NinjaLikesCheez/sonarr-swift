@@ -77,6 +77,13 @@ struct SeriesRequestsTests {
 	}
 
 	@Test
+	func test_lookupSeries() async throws {
+		let results = try await client.request(.lookupSeries(term: "The Simpsons"))
+
+		#expect(!results.isEmpty)
+	}
+
+	@Test
 	func test_editSeries_deleteSeriesInBulk() async throws {
 		let qualityProfiles = try await client.request(.qualityProfiles)
 		let qualityProfile = try #require(qualityProfiles.first)

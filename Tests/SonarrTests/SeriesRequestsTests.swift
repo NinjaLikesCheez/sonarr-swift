@@ -71,6 +71,28 @@ struct SeriesRequestsTests {
 		#expect(decoded == [sampleSeries])
 	}
 
+	@Test func lookupSeriesRequestConstructionWithDefaults() {
+		let request = SonarrRequest.lookupSeries()
+
+		#expect(request.method == .get)
+		#expect(request.path == "api/v3/series/lookup")
+
+		let urlRequest = URLRequest(url: URL(string: "http://localhost:8989/api/v3/series/lookup")!)
+		let prepared = request.prepare(urlRequest)
+
+		#expect(prepared.url?.absoluteString == "http://localhost:8989/api/v3/series/lookup")
+	}
+
+	@Test func lookupSeriesRequestConstructionWithTerm() {
+		let request = SonarrRequest.lookupSeries(term: "The Simpsons")
+
+		let urlRequest = URLRequest(url: URL(string: "http://localhost:8989/api/v3/series/lookup")!)
+		let prepared = request.prepare(urlRequest)
+		let components = URLComponents(url: prepared.url!, resolvingAgainstBaseURL: false)
+
+		#expect(components?.queryItems == [URLQueryItem(name: "term", value: "The Simpsons")])
+	}
+
 	@Test func seriesByIdRequestConstructionWithDefaults() {
 		let request = SonarrRequest.series(id: 1)
 
