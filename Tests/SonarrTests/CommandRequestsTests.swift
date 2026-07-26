@@ -229,4 +229,27 @@ struct CommandRequestsTests {
 		#expect(command.duration == nil)
 		#expect(command.exception == nil)
 	}
+
+	@Test func commandResourceDecodingWithNullName() throws {
+		let json = Data(
+			#"""
+			{
+				"id": 3,
+				"name": null,
+				"commandName": null,
+				"priority": "normal",
+				"status": "queued",
+				"queued": "2024-01-01T12:00:00Z",
+				"trigger": "scheduled",
+				"sendUpdatesToClient": true,
+				"updateScheduledTask": true
+			}
+			"""#.utf8
+		)
+
+		let command = try client.decoder.decode(CommandResource.self, from: json)
+
+		#expect(command.name == nil)
+		#expect(command.commandName == nil)
+	}
 }

@@ -72,6 +72,28 @@ struct BackupRequestsTests {
 		#expect(backups.first?.size == 1024)
 	}
 
+	@Test func backupsDecodingWithNullNameAndPath() throws {
+		let json = Data(
+			#"""
+			[
+				{
+					"id": 1,
+					"name": null,
+					"path": null,
+					"type": "scheduled",
+					"size": 1024,
+					"time": "2024-01-01T00:00:00Z"
+				}
+			]
+			"""#.utf8
+		)
+
+		let backups = try client.decoder.decode([BackupResource].self, from: json)
+
+		#expect(backups.first?.name == nil)
+		#expect(backups.first?.path == nil)
+	}
+
 	@Test func backupRestoreResultDecoding() throws {
 		let json = Data(#"{"restartRequired": true}"#.utf8)
 

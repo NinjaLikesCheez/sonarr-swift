@@ -3,7 +3,7 @@ public struct Quality: Equatable, Codable, Sendable {
 	/// Sonarr's internal identifier for the quality.
 	public let id: Int
 	/// The display name of the quality, e.g. `WEBDL-1080p`.
-	public let name: String
+	public let name: String?
 	/// The source Sonarr detected the release from, e.g. `web`.
 	public let source: String
 	/// The vertical resolution of the release, in pixels.
@@ -15,7 +15,7 @@ public struct Quality: Equatable, Codable, Sendable {
 	///   - name: The display name of the quality.
 	///   - source: The source Sonarr detected the release from.
 	///   - resolution: The vertical resolution of the release, in pixels.
-	public init(id: Int, name: String, source: String, resolution: Int) {
+	public init(id: Int, name: String? = nil, source: String, resolution: Int) {
 		self.id = id
 		self.name = name
 		self.source = source
