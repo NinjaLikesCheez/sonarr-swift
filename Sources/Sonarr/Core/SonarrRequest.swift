@@ -9,6 +9,17 @@ import Foundation
 /// ISO 8601 strings rather than the default `JSONEncoder`'s raw epoch-seconds numbers.
 let sonarrEncoder = Sonarr.makeEncoder()
 
+// `CharacterSet.urlQueryAllowed` leaves `+` unescaped, and `URLComponents.queryItems` uses it as-is -
+// ASP.NET Core (Sonarr's stack) decodes an unencoded `+` in a query string as a space, so a literal `+`
+// in a query value (e.g. searching for "C++") silently reaches the server as a space instead. Percent-
+// encode query values ourselves with `+` (and `&`/`=`, which would otherwise be misread as delimiters)
+// explicitly excluded from the allowed set, rather than going through `queryItems`.
+private let queryValueAllowedCharacters: CharacterSet = {
+	var allowed = CharacterSet.urlQueryAllowed
+	allowed.remove(charactersIn: "+&=")
+	return allowed
+}()
+
 public struct SonarrRequest<SonarrResponse: Decodable>: Request {
 	public typealias Response = SonarrResponse
 	public var method: HTTPMethod
@@ -49,11 +60,23 @@ public struct SonarrRequest<SonarrResponse: Decodable>: Request {
 			return request
 		}
 
-		components.queryItems = (components.queryItems ?? []) + queryItems
+		let encodedItems = queryItems.map { item in
+			let name = percentEncode(item.name)
+			let value = percentEncode(item.value ?? "")
+			return "\(name)=\(value)"
+		}
+		.joined(separator: "&")
+
+		let existingQuery = components.percentEncodedQuery ?? ""
+		components.percentEncodedQuery = existingQuery.isEmpty ? encodedItems : "\(existingQuery)&\(encodedItems)"
 
 		var request = request
 		request.url = components.url ?? url
 		return request
+	}
+
+	private static func percentEncode(_ value: String) -> String {
+		value.addingPercentEncoding(withAllowedCharacters: queryValueAllowedCharacters) ?? value
 	}
 }
 
