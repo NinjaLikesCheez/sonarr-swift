@@ -43,8 +43,16 @@ struct ReleaseProfileRequestsTests {
 		#expect(request.path == "api/v3/releaseprofile")
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(ReleaseProfileResource.self, from: try body.encode())
-		#expect(decoded == sampleReleaseProfile)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["id"] as? Int == 1)
+		#expect(json["name"] as? String == "No French")
+		#expect(json["enabled"] as? Bool == true)
+		#expect(json["required"] as? [String] == ["1080p"])
+		#expect(json["ignored"] as? [String] == ["FRENCH", "TRUEFRENCH"])
+		#expect(json["indexerId"] as? Int == 0)
+		#expect(json["tags"] as? [Int] == [])
 	}
 
 	@Test func updateReleaseProfileRequestConstruction() throws {
@@ -54,8 +62,16 @@ struct ReleaseProfileRequestsTests {
 		#expect(request.path == "api/v3/releaseprofile/1")
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(ReleaseProfileResource.self, from: try body.encode())
-		#expect(decoded == sampleReleaseProfile)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["id"] as? Int == 1)
+		#expect(json["name"] as? String == "No French")
+		#expect(json["enabled"] as? Bool == true)
+		#expect(json["required"] as? [String] == ["1080p"])
+		#expect(json["ignored"] as? [String] == ["FRENCH", "TRUEFRENCH"])
+		#expect(json["indexerId"] as? Int == 0)
+		#expect(json["tags"] as? [Int] == [])
 	}
 
 	@Test func deleteReleaseProfileRequestConstruction() {

@@ -52,8 +52,21 @@ struct DownloadClientRequestsTests {
 		#expect(components?.queryItems == [URLQueryItem(name: "forceSave", value: "true")])
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(DownloadClientResource.self, from: try body.encode())
-		#expect(decoded == sampleDownloadClient)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["id"] as? Int == 1)
+		#expect(json["name"] as? String == "SABnzbd")
+		#expect(json["implementationName"] as? String == "SABnzbd")
+		#expect(json["implementation"] as? String == "Sabnzbd")
+		#expect(json["configContract"] as? String == "SabnzbdSettings")
+		#expect(json["infoLink"] as? String == "https://wiki.servarr.com/sonarr/settings#download-clients")
+		#expect(json["tags"] as? [Int] == [])
+		#expect(json["enable"] as? Bool == true)
+		#expect(json["protocol"] as? String == "usenet")
+		#expect(json["priority"] as? Int == 1)
+		#expect(json["removeCompletedDownloads"] as? Bool == false)
+		#expect(json["removeFailedDownloads"] as? Bool == false)
 	}
 
 	@Test func addDownloadClientRequestConstructionDefaultsForceSaveFalse() {
@@ -77,8 +90,21 @@ struct DownloadClientRequestsTests {
 		#expect(components?.queryItems == [URLQueryItem(name: "forceSave", value: "true")])
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(DownloadClientResource.self, from: try body.encode())
-		#expect(decoded == sampleDownloadClient)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["id"] as? Int == 1)
+		#expect(json["name"] as? String == "SABnzbd")
+		#expect(json["implementationName"] as? String == "SABnzbd")
+		#expect(json["implementation"] as? String == "Sabnzbd")
+		#expect(json["configContract"] as? String == "SabnzbdSettings")
+		#expect(json["infoLink"] as? String == "https://wiki.servarr.com/sonarr/settings#download-clients")
+		#expect(json["tags"] as? [Int] == [])
+		#expect(json["enable"] as? Bool == true)
+		#expect(json["protocol"] as? String == "usenet")
+		#expect(json["priority"] as? Int == 1)
+		#expect(json["removeCompletedDownloads"] as? Bool == false)
+		#expect(json["removeFailedDownloads"] as? Bool == false)
 	}
 
 	@Test func deleteDownloadClientRequestConstruction() {
@@ -96,11 +122,13 @@ struct DownloadClientRequestsTests {
 		#expect(request.path == "api/v3/downloadclient/bulk")
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(DownloadClientBulkResourceFixture.self, from: try body.encode())
-		#expect(decoded.ids == [1, 2, 3])
-		#expect(decoded.tags == [4])
-		#expect(decoded.applyTags == "add")
-		#expect(decoded.enable == true)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["ids"] as? [Int] == [1, 2, 3])
+		#expect(json["tags"] as? [Int] == [4])
+		#expect(json["applyTags"] as? String == "add")
+		#expect(json["enable"] as? Bool == true)
 	}
 
 	@Test func deleteDownloadClientsRequestConstruction() throws {
@@ -111,8 +139,10 @@ struct DownloadClientRequestsTests {
 		#expect(request.path == "api/v3/downloadclient/bulk")
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(DownloadClientBulkResourceFixture.self, from: try body.encode())
-		#expect(decoded.ids == [1, 2, 3])
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["ids"] as? [Int] == [1, 2, 3])
 	}
 
 	@Test func downloadClientSchemaRequestConstruction() {
@@ -135,8 +165,21 @@ struct DownloadClientRequestsTests {
 		#expect(components?.queryItems == [URLQueryItem(name: "forceTest", value: "true")])
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(DownloadClientResource.self, from: try body.encode())
-		#expect(decoded == sampleDownloadClient)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["id"] as? Int == 1)
+		#expect(json["name"] as? String == "SABnzbd")
+		#expect(json["implementationName"] as? String == "SABnzbd")
+		#expect(json["implementation"] as? String == "Sabnzbd")
+		#expect(json["configContract"] as? String == "SabnzbdSettings")
+		#expect(json["infoLink"] as? String == "https://wiki.servarr.com/sonarr/settings#download-clients")
+		#expect(json["tags"] as? [Int] == [])
+		#expect(json["enable"] as? Bool == true)
+		#expect(json["protocol"] as? String == "usenet")
+		#expect(json["priority"] as? Int == 1)
+		#expect(json["removeCompletedDownloads"] as? Bool == false)
+		#expect(json["removeFailedDownloads"] as? Bool == false)
 	}
 
 	@Test func testAllDownloadClientsRequestConstruction() {
@@ -153,8 +196,21 @@ struct DownloadClientRequestsTests {
 		#expect(request.path == "api/v3/downloadclient/action/checkForUpdates")
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(DownloadClientResource.self, from: try body.encode())
-		#expect(decoded == sampleDownloadClient)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["id"] as? Int == 1)
+		#expect(json["name"] as? String == "SABnzbd")
+		#expect(json["implementationName"] as? String == "SABnzbd")
+		#expect(json["implementation"] as? String == "Sabnzbd")
+		#expect(json["configContract"] as? String == "SabnzbdSettings")
+		#expect(json["infoLink"] as? String == "https://wiki.servarr.com/sonarr/settings#download-clients")
+		#expect(json["tags"] as? [Int] == [])
+		#expect(json["enable"] as? Bool == true)
+		#expect(json["protocol"] as? String == "usenet")
+		#expect(json["priority"] as? Int == 1)
+		#expect(json["removeCompletedDownloads"] as? Bool == false)
+		#expect(json["removeFailedDownloads"] as? Bool == false)
 	}
 
 	@Test func downloadClientResourceDecoding() throws {
@@ -238,11 +294,4 @@ struct DownloadClientRequestsTests {
 		#expect(downloadClients.first?.presets?.count == 1)
 		#expect(downloadClients.first?.presets?.first?.implementation == "QBittorrent")
 	}
-}
-
-private struct DownloadClientBulkResourceFixture: Decodable {
-	let ids: [Int]?
-	let tags: [Int]?
-	let applyTags: String?
-	let enable: Bool?
 }

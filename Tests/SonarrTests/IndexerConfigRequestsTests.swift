@@ -41,8 +41,14 @@ struct IndexerConfigRequestsTests {
 		#expect(request.path == "api/v3/config/indexer/1")
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(IndexerConfigResource.self, from: try body.encode())
-		#expect(decoded == sampleIndexerConfig)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["id"] as? Int == 1)
+		#expect(json["minimumAge"] as? Int == 0)
+		#expect(json["retention"] as? Int == 0)
+		#expect(json["maximumSize"] as? Int == 0)
+		#expect(json["rssSyncInterval"] as? Int == 15)
 	}
 
 	@Test func indexerConfigResourceDecoding() throws {

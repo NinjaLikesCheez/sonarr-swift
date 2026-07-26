@@ -49,8 +49,21 @@ struct AutoTaggingRequestsTests {
 		#expect(request.path == "api/v3/autotagging")
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(AutoTaggingResource.self, from: try body.encode())
-		#expect(decoded == sampleAutoTagging)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["id"] as? Int == 1)
+		#expect(json["name"] as? String == "Anime")
+		#expect(json["removeTagsAutomatically"] as? Bool == true)
+		#expect(json["tags"] as? [Int] == [3])
+		let specifications = try #require(json["specifications"] as? [[String: Any]])
+		#expect(specifications.count == 1)
+		#expect(specifications.first?["id"] as? Int == 2)
+		#expect(specifications.first?["name"] as? String == "Is Anime")
+		#expect(specifications.first?["implementation"] as? String == "SeriesTypeSpecification")
+		#expect(specifications.first?["implementationName"] as? String == "Series Type")
+		#expect(specifications.first?["negate"] as? Bool == false)
+		#expect(specifications.first?["required"] as? Bool == true)
 	}
 
 	@Test func updateAutoTaggingRequestConstruction() throws {
@@ -60,8 +73,21 @@ struct AutoTaggingRequestsTests {
 		#expect(request.path == "api/v3/autotagging/1")
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(AutoTaggingResource.self, from: try body.encode())
-		#expect(decoded == sampleAutoTagging)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["id"] as? Int == 1)
+		#expect(json["name"] as? String == "Anime")
+		#expect(json["removeTagsAutomatically"] as? Bool == true)
+		#expect(json["tags"] as? [Int] == [3])
+		let specifications = try #require(json["specifications"] as? [[String: Any]])
+		#expect(specifications.count == 1)
+		#expect(specifications.first?["id"] as? Int == 2)
+		#expect(specifications.first?["name"] as? String == "Is Anime")
+		#expect(specifications.first?["implementation"] as? String == "SeriesTypeSpecification")
+		#expect(specifications.first?["implementationName"] as? String == "Series Type")
+		#expect(specifications.first?["negate"] as? Bool == false)
+		#expect(specifications.first?["required"] as? Bool == true)
 	}
 
 	@Test func deleteAutoTaggingRequestConstruction() {

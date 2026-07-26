@@ -39,8 +39,12 @@ struct ImportListConfigRequestsTests {
 		#expect(request.path == "api/v3/config/importlist/1")
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(ImportListConfigResource.self, from: try body.encode())
-		#expect(decoded == sampleImportListConfig)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["id"] as? Int == 1)
+		#expect(json["listSyncLevel"] as? String == "keepAndTag")
+		#expect(json["listSyncTag"] as? Int == 3)
 	}
 
 	@Test func importListConfigResourceDecoding() throws {

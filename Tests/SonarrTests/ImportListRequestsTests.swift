@@ -56,8 +56,25 @@ struct ImportListRequestsTests {
 		#expect(components?.queryItems == [URLQueryItem(name: "forceSave", value: "true")])
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(ImportListResource.self, from: try body.encode())
-		#expect(decoded == sampleImportList)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["id"] as? Int == 1)
+		#expect(json["name"] as? String == "Trakt Watchlist")
+		#expect(json["implementationName"] as? String == "Trakt Watchlist")
+		#expect(json["implementation"] as? String == "TraktWatchlistImport")
+		#expect(json["configContract"] as? String == "TraktWatchlistSettings")
+		#expect(json["infoLink"] as? String == "https://wiki.servarr.com/sonarr/settings#import-lists")
+		#expect(json["tags"] as? [Int] == [])
+		#expect(json["enableAutomaticAdd"] as? Bool == true)
+		#expect(json["searchForMissingEpisodes"] as? Bool == false)
+		#expect(json["shouldMonitor"] as? String == "all")
+		#expect(json["monitorNewItems"] as? String == "all")
+		#expect(json["qualityProfileId"] as? Int == 1)
+		#expect(json["seriesType"] as? String == "standard")
+		#expect(json["seasonFolder"] as? Bool == true)
+		#expect(json["listType"] as? String == "trakt")
+		#expect(json["listOrder"] as? Int == 0)
 	}
 
 	@Test func addImportListRequestConstructionDefaultsForceSaveFalse() {
@@ -81,8 +98,25 @@ struct ImportListRequestsTests {
 		#expect(components?.queryItems == [URLQueryItem(name: "forceSave", value: "true")])
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(ImportListResource.self, from: try body.encode())
-		#expect(decoded == sampleImportList)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["id"] as? Int == 1)
+		#expect(json["name"] as? String == "Trakt Watchlist")
+		#expect(json["implementationName"] as? String == "Trakt Watchlist")
+		#expect(json["implementation"] as? String == "TraktWatchlistImport")
+		#expect(json["configContract"] as? String == "TraktWatchlistSettings")
+		#expect(json["infoLink"] as? String == "https://wiki.servarr.com/sonarr/settings#import-lists")
+		#expect(json["tags"] as? [Int] == [])
+		#expect(json["enableAutomaticAdd"] as? Bool == true)
+		#expect(json["searchForMissingEpisodes"] as? Bool == false)
+		#expect(json["shouldMonitor"] as? String == "all")
+		#expect(json["monitorNewItems"] as? String == "all")
+		#expect(json["qualityProfileId"] as? Int == 1)
+		#expect(json["seriesType"] as? String == "standard")
+		#expect(json["seasonFolder"] as? Bool == true)
+		#expect(json["listType"] as? String == "trakt")
+		#expect(json["listOrder"] as? Int == 0)
 	}
 
 	@Test func deleteImportListRequestConstruction() {
@@ -100,11 +134,13 @@ struct ImportListRequestsTests {
 		#expect(request.path == "api/v3/importlist/bulk")
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(ImportListBulkResourceFixture.self, from: try body.encode())
-		#expect(decoded.ids == [1, 2, 3])
-		#expect(decoded.tags == [4])
-		#expect(decoded.applyTags == "add")
-		#expect(decoded.enableAutomaticAdd == true)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["ids"] as? [Int] == [1, 2, 3])
+		#expect(json["tags"] as? [Int] == [4])
+		#expect(json["applyTags"] as? String == "add")
+		#expect(json["enableAutomaticAdd"] as? Bool == true)
 	}
 
 	@Test func deleteImportListsRequestConstruction() throws {
@@ -115,8 +151,10 @@ struct ImportListRequestsTests {
 		#expect(request.path == "api/v3/importlist/bulk")
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(ImportListBulkResourceFixture.self, from: try body.encode())
-		#expect(decoded.ids == [1, 2, 3])
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["ids"] as? [Int] == [1, 2, 3])
 	}
 
 	@Test func importListSchemaRequestConstruction() {
@@ -139,8 +177,25 @@ struct ImportListRequestsTests {
 		#expect(components?.queryItems == [URLQueryItem(name: "forceTest", value: "true")])
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(ImportListResource.self, from: try body.encode())
-		#expect(decoded == sampleImportList)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["id"] as? Int == 1)
+		#expect(json["name"] as? String == "Trakt Watchlist")
+		#expect(json["implementationName"] as? String == "Trakt Watchlist")
+		#expect(json["implementation"] as? String == "TraktWatchlistImport")
+		#expect(json["configContract"] as? String == "TraktWatchlistSettings")
+		#expect(json["infoLink"] as? String == "https://wiki.servarr.com/sonarr/settings#import-lists")
+		#expect(json["tags"] as? [Int] == [])
+		#expect(json["enableAutomaticAdd"] as? Bool == true)
+		#expect(json["searchForMissingEpisodes"] as? Bool == false)
+		#expect(json["shouldMonitor"] as? String == "all")
+		#expect(json["monitorNewItems"] as? String == "all")
+		#expect(json["qualityProfileId"] as? Int == 1)
+		#expect(json["seriesType"] as? String == "standard")
+		#expect(json["seasonFolder"] as? Bool == true)
+		#expect(json["listType"] as? String == "trakt")
+		#expect(json["listOrder"] as? Int == 0)
 	}
 
 	@Test func testAllImportListsRequestConstruction() {
@@ -157,8 +212,25 @@ struct ImportListRequestsTests {
 		#expect(request.path == "api/v3/importlist/action/getMissingMovies")
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(ImportListResource.self, from: try body.encode())
-		#expect(decoded == sampleImportList)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["id"] as? Int == 1)
+		#expect(json["name"] as? String == "Trakt Watchlist")
+		#expect(json["implementationName"] as? String == "Trakt Watchlist")
+		#expect(json["implementation"] as? String == "TraktWatchlistImport")
+		#expect(json["configContract"] as? String == "TraktWatchlistSettings")
+		#expect(json["infoLink"] as? String == "https://wiki.servarr.com/sonarr/settings#import-lists")
+		#expect(json["tags"] as? [Int] == [])
+		#expect(json["enableAutomaticAdd"] as? Bool == true)
+		#expect(json["searchForMissingEpisodes"] as? Bool == false)
+		#expect(json["shouldMonitor"] as? String == "all")
+		#expect(json["monitorNewItems"] as? String == "all")
+		#expect(json["qualityProfileId"] as? Int == 1)
+		#expect(json["seriesType"] as? String == "standard")
+		#expect(json["seasonFolder"] as? Bool == true)
+		#expect(json["listType"] as? String == "trakt")
+		#expect(json["listOrder"] as? Int == 0)
 	}
 
 	@Test func importListResourceDecoding() throws {
@@ -263,11 +335,4 @@ struct ImportListRequestsTests {
 		#expect(importLists.first?.presets?.count == 1)
 		#expect(importLists.first?.presets?.first?.implementation == "PlexImport")
 	}
-}
-
-private struct ImportListBulkResourceFixture: Decodable {
-	let ids: [Int]?
-	let tags: [Int]?
-	let applyTags: String?
-	let enableAutomaticAdd: Bool?
 }

@@ -57,8 +57,30 @@ struct MediaManagementConfigRequestsTests {
 		#expect(request.path == "api/v3/config/mediamanagement/1")
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(MediaManagementConfigResource.self, from: try body.encode())
-		#expect(decoded == sampleMediaManagementConfig)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["id"] as? Int == 1)
+		#expect(json["autoUnmonitorPreviouslyDownloadedEpisodes"] as? Bool == false)
+		#expect(json["recycleBin"] as? String == "")
+		#expect(json["recycleBinCleanupDays"] as? Int == 7)
+		#expect(json["downloadPropersAndRepacks"] as? String == "preferAndUpgrade")
+		#expect(json["createEmptySeriesFolders"] as? Bool == false)
+		#expect(json["deleteEmptyFolders"] as? Bool == false)
+		#expect(json["fileDate"] as? String == "none")
+		#expect(json["rescanAfterRefresh"] as? String == "always")
+		#expect(json["setPermissionsLinux"] as? Bool == false)
+		#expect(json["chmodFolder"] as? String == "755")
+		#expect(json["chownGroup"] as? String == "")
+		#expect(json["episodeTitleRequired"] as? String == "always")
+		#expect(json["skipFreeSpaceCheckWhenImporting"] as? Bool == false)
+		#expect(json["minimumFreeSpaceWhenImporting"] as? Int == 100)
+		#expect(json["copyUsingHardlinks"] as? Bool == true)
+		#expect(json["useScriptImport"] as? Bool == false)
+		#expect(json["scriptImportPath"] as? String == "")
+		#expect(json["importExtraFiles"] as? Bool == false)
+		#expect(json["extraFileExtensions"] as? String == "srt")
+		#expect(json["enableMediaInfo"] as? Bool == true)
 	}
 
 	@Test func mediaManagementConfigResourceDecoding() throws {

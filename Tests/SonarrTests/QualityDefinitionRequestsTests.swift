@@ -43,8 +43,21 @@ struct QualityDefinitionRequestsTests {
 		#expect(request.path == "api/v3/qualitydefinition/1")
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(QualityDefinitionResource.self, from: try body.encode())
-		#expect(decoded == sampleQualityDefinition)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["id"] as? Int == 1)
+		#expect(json["title"] as? String == "WEBDL-1080p")
+		#expect(json["weight"] as? Int == 5)
+		#expect(json["minSize"] as? Double == 1.0)
+		#expect(json["maxSize"] as? Double == 199.9)
+		#expect(json["preferredSize"] as? Double == 95.0)
+
+		let quality = try #require(json["quality"] as? [String: Any])
+		#expect(quality["id"] as? Int == 3)
+		#expect(quality["name"] as? String == "WEBDL-1080p")
+		#expect(quality["source"] as? String == "web")
+		#expect(quality["resolution"] as? Int == 1080)
 	}
 
 	@Test func updateQualityDefinitionsRequestConstruction() throws {
@@ -55,8 +68,18 @@ struct QualityDefinitionRequestsTests {
 		#expect(request.path == "api/v3/qualitydefinition/update")
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode([QualityDefinitionResource].self, from: try body.encode())
-		#expect(decoded == definitions)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [[String: Any]])
+
+		#expect(json.count == 1)
+
+		let first = try #require(json.first)
+		#expect(first["id"] as? Int == 1)
+		#expect(first["title"] as? String == "WEBDL-1080p")
+		#expect(first["weight"] as? Int == 5)
+		#expect(first["minSize"] as? Double == 1.0)
+		#expect(first["maxSize"] as? Double == 199.9)
+		#expect(first["preferredSize"] as? Double == 95.0)
 	}
 
 	@Test func qualityDefinitionLimitsRequestConstruction() {

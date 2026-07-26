@@ -51,8 +51,23 @@ struct CustomFormatRequestsTests {
 		#expect(request.path == "api/v3/customformat")
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(CustomFormatResource.self, from: try body.encode())
-		#expect(decoded == sampleCustomFormat)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["id"] as? Int == 1)
+		#expect(json["name"] as? String == "Surround Sound")
+		#expect(json["includeCustomFormatWhenRenaming"] as? Bool == false)
+
+		let specifications = try #require(json["specifications"] as? [[String: Any]])
+		#expect(specifications.count == 1)
+		let specification = try #require(specifications.first)
+		#expect(specification["id"] as? Int == 1)
+		#expect(specification["name"] as? String == "Surround Sound")
+		#expect(specification["implementation"] as? String == "ReleaseTitleSpecification")
+		#expect(specification["implementationName"] as? String == "Release Title")
+		#expect(specification["infoLink"] as? String == "https://wiki.servarr.com/sonarr/settings#custom-formats")
+		#expect(specification["negate"] as? Bool == false)
+		#expect(specification["required"] as? Bool == true)
 	}
 
 	@Test func updateCustomFormatRequestConstruction() throws {
@@ -62,8 +77,23 @@ struct CustomFormatRequestsTests {
 		#expect(request.path == "api/v3/customformat/1")
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(CustomFormatResource.self, from: try body.encode())
-		#expect(decoded == sampleCustomFormat)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["id"] as? Int == 1)
+		#expect(json["name"] as? String == "Surround Sound")
+		#expect(json["includeCustomFormatWhenRenaming"] as? Bool == false)
+
+		let specifications = try #require(json["specifications"] as? [[String: Any]])
+		#expect(specifications.count == 1)
+		let specification = try #require(specifications.first)
+		#expect(specification["id"] as? Int == 1)
+		#expect(specification["name"] as? String == "Surround Sound")
+		#expect(specification["implementation"] as? String == "ReleaseTitleSpecification")
+		#expect(specification["implementationName"] as? String == "Release Title")
+		#expect(specification["infoLink"] as? String == "https://wiki.servarr.com/sonarr/settings#custom-formats")
+		#expect(specification["negate"] as? Bool == false)
+		#expect(specification["required"] as? Bool == true)
 	}
 
 	@Test func deleteCustomFormatRequestConstruction() {
@@ -80,9 +110,11 @@ struct CustomFormatRequestsTests {
 		#expect(request.path == "api/v3/customformat/bulk")
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(CustomFormatBulkResourceFixture.self, from: try body.encode())
-		#expect(decoded.ids == [1, 2, 3])
-		#expect(decoded.includeCustomFormatWhenRenaming == true)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["ids"] as? [Int] == [1, 2, 3])
+		#expect(json["includeCustomFormatWhenRenaming"] as? Bool == true)
 	}
 
 	@Test func deleteCustomFormatsRequestConstruction() throws {
@@ -92,9 +124,11 @@ struct CustomFormatRequestsTests {
 		#expect(request.path == "api/v3/customformat/bulk")
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(CustomFormatBulkResourceFixture.self, from: try body.encode())
-		#expect(decoded.ids == [1, 2, 3])
-		#expect(decoded.includeCustomFormatWhenRenaming == nil)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["ids"] as? [Int] == [1, 2, 3])
+		#expect(json.keys.contains("includeCustomFormatWhenRenaming") == false)
 	}
 
 	@Test func customFormatSchemaRequestConstruction() {
@@ -191,9 +225,4 @@ struct CustomFormatRequestsTests {
 		#expect(specification.presets?.count == 1)
 		#expect(specification.presets?.first?.name == "English")
 	}
-}
-
-private struct CustomFormatBulkResourceFixture: Decodable {
-	let ids: [Int]
-	let includeCustomFormatWhenRenaming: Bool?
 }

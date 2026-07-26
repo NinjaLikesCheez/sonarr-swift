@@ -35,8 +35,14 @@ struct RootFolderRequestsTests {
 		#expect(request.path == "api/v3/rootfolder")
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(RootFolderResource.self, from: try body.encode())
-		#expect(decoded == sampleRootFolder)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["id"] as? Int == 1)
+		#expect(json["path"] as? String == "/media")
+		#expect(json["accessible"] as? Bool == true)
+		#expect(json["freeSpace"] as? Int == 123_456_789)
+		#expect((json["unmappedFolders"] as? [[String: Any]])?.isEmpty == true)
 	}
 
 	@Test func deleteRootFolderRequestConstruction() {

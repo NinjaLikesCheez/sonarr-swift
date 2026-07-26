@@ -63,8 +63,42 @@ struct QualityProfileRequestsTests {
 		#expect(request.path == "api/v3/qualityprofile")
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(QualityProfileResource.self, from: try body.encode())
-		#expect(decoded == sampleQualityProfile)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["id"] as? Int == 1)
+		#expect(json["name"] as? String == "HD-1080p")
+		#expect(json["upgradeAllowed"] as? Bool == true)
+		#expect(json["cutoff"] as? Int == 9)
+		#expect(json["minFormatScore"] as? Int == 0)
+		#expect(json["cutoffFormatScore"] as? Int == 0)
+		#expect(json["minUpgradeFormatScore"] as? Int == 1)
+		#expect((json["formatItems"] as? [[String: Any]])?.isEmpty == true)
+
+		let items = try #require(json["items"] as? [[String: Any]])
+		#expect(items.count == 2)
+
+		let leafItem = try #require(items.first)
+		let leafQuality = try #require(leafItem["quality"] as? [String: Any])
+		#expect(leafQuality["id"] as? Int == 9)
+		#expect(leafQuality["name"] as? String == "HDTV-1080p")
+		#expect(leafQuality["source"] as? String == "television")
+		#expect(leafQuality["resolution"] as? Int == 1080)
+		#expect(leafItem["allowed"] as? Bool == true)
+		#expect((leafItem["items"] as? [[String: Any]])?.isEmpty == true)
+
+		let groupItem = try #require(items.last)
+		#expect(groupItem["id"] as? Int == 1000)
+		#expect(groupItem["name"] as? String == "WEB 1080p")
+		#expect(groupItem["allowed"] as? Bool == true)
+
+		let groupNestedItems = try #require(groupItem["items"] as? [[String: Any]])
+		#expect(groupNestedItems.count == 1)
+		let nestedQuality = try #require(groupNestedItems.first?["quality"] as? [String: Any])
+		#expect(nestedQuality["id"] as? Int == 3)
+		#expect(nestedQuality["name"] as? String == "WEBDL-1080p")
+		#expect(nestedQuality["source"] as? String == "web")
+		#expect(nestedQuality["resolution"] as? Int == 1080)
 	}
 
 	@Test func updateQualityProfileRequestConstruction() throws {
@@ -74,8 +108,42 @@ struct QualityProfileRequestsTests {
 		#expect(request.path == "api/v3/qualityprofile/1")
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(QualityProfileResource.self, from: try body.encode())
-		#expect(decoded == sampleQualityProfile)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["id"] as? Int == 1)
+		#expect(json["name"] as? String == "HD-1080p")
+		#expect(json["upgradeAllowed"] as? Bool == true)
+		#expect(json["cutoff"] as? Int == 9)
+		#expect(json["minFormatScore"] as? Int == 0)
+		#expect(json["cutoffFormatScore"] as? Int == 0)
+		#expect(json["minUpgradeFormatScore"] as? Int == 1)
+		#expect((json["formatItems"] as? [[String: Any]])?.isEmpty == true)
+
+		let items = try #require(json["items"] as? [[String: Any]])
+		#expect(items.count == 2)
+
+		let leafItem = try #require(items.first)
+		let leafQuality = try #require(leafItem["quality"] as? [String: Any])
+		#expect(leafQuality["id"] as? Int == 9)
+		#expect(leafQuality["name"] as? String == "HDTV-1080p")
+		#expect(leafQuality["source"] as? String == "television")
+		#expect(leafQuality["resolution"] as? Int == 1080)
+		#expect(leafItem["allowed"] as? Bool == true)
+		#expect((leafItem["items"] as? [[String: Any]])?.isEmpty == true)
+
+		let groupItem = try #require(items.last)
+		#expect(groupItem["id"] as? Int == 1000)
+		#expect(groupItem["name"] as? String == "WEB 1080p")
+		#expect(groupItem["allowed"] as? Bool == true)
+
+		let groupNestedItems = try #require(groupItem["items"] as? [[String: Any]])
+		#expect(groupNestedItems.count == 1)
+		let nestedQuality = try #require(groupNestedItems.first?["quality"] as? [String: Any])
+		#expect(nestedQuality["id"] as? Int == 3)
+		#expect(nestedQuality["name"] as? String == "WEBDL-1080p")
+		#expect(nestedQuality["source"] as? String == "web")
+		#expect(nestedQuality["resolution"] as? Int == 1080)
 	}
 
 	@Test func deleteQualityProfileRequestConstruction() {

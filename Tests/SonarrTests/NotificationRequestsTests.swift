@@ -52,8 +52,21 @@ struct NotificationRequestsTests {
 		#expect(components?.queryItems == [URLQueryItem(name: "forceSave", value: "true")])
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(NotificationResource.self, from: try body.encode())
-		#expect(decoded == sampleNotification)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["id"] as? Int == 1)
+		#expect(json["name"] as? String == "Discord")
+		#expect(json["implementationName"] as? String == "Discord")
+		#expect(json["implementation"] as? String == "Discord")
+		#expect(json["configContract"] as? String == "DiscordSettings")
+		#expect(json["infoLink"] as? String == "https://wiki.servarr.com/sonarr/settings#connect")
+		#expect(json["tags"] as? [Int] == [])
+		#expect(json["onGrab"] as? Bool == true)
+		#expect(json["onDownload"] as? Bool == true)
+		#expect(json["onUpgrade"] as? Bool == false)
+		#expect(json["supportsOnGrab"] as? Bool == true)
+		#expect(json["supportsOnDownload"] as? Bool == true)
 	}
 
 	@Test func addNotificationRequestConstructionDefaultsForceSaveFalse() {
@@ -75,8 +88,21 @@ struct NotificationRequestsTests {
 		#expect(components?.queryItems == [URLQueryItem(name: "forceSave", value: "true")])
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(NotificationResource.self, from: try body.encode())
-		#expect(decoded == sampleNotification)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["id"] as? Int == 1)
+		#expect(json["name"] as? String == "Discord")
+		#expect(json["implementationName"] as? String == "Discord")
+		#expect(json["implementation"] as? String == "Discord")
+		#expect(json["configContract"] as? String == "DiscordSettings")
+		#expect(json["infoLink"] as? String == "https://wiki.servarr.com/sonarr/settings#connect")
+		#expect(json["tags"] as? [Int] == [])
+		#expect(json["onGrab"] as? Bool == true)
+		#expect(json["onDownload"] as? Bool == true)
+		#expect(json["onUpgrade"] as? Bool == false)
+		#expect(json["supportsOnGrab"] as? Bool == true)
+		#expect(json["supportsOnDownload"] as? Bool == true)
 	}
 
 	@Test func deleteNotificationRequestConstruction() {
@@ -106,8 +132,21 @@ struct NotificationRequestsTests {
 		#expect(components?.queryItems == [URLQueryItem(name: "forceTest", value: "true")])
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(NotificationResource.self, from: try body.encode())
-		#expect(decoded == sampleNotification)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["id"] as? Int == 1)
+		#expect(json["name"] as? String == "Discord")
+		#expect(json["implementationName"] as? String == "Discord")
+		#expect(json["implementation"] as? String == "Discord")
+		#expect(json["configContract"] as? String == "DiscordSettings")
+		#expect(json["infoLink"] as? String == "https://wiki.servarr.com/sonarr/settings#connect")
+		#expect(json["tags"] as? [Int] == [])
+		#expect(json["onGrab"] as? Bool == true)
+		#expect(json["onDownload"] as? Bool == true)
+		#expect(json["onUpgrade"] as? Bool == false)
+		#expect(json["supportsOnGrab"] as? Bool == true)
+		#expect(json["supportsOnDownload"] as? Bool == true)
 	}
 
 	@Test func testAllNotificationsRequestConstruction() {
@@ -124,8 +163,21 @@ struct NotificationRequestsTests {
 		#expect(request.path == "api/v3/notification/action/checkForUpdates")
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(NotificationResource.self, from: try body.encode())
-		#expect(decoded == sampleNotification)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["id"] as? Int == 1)
+		#expect(json["name"] as? String == "Discord")
+		#expect(json["implementationName"] as? String == "Discord")
+		#expect(json["implementation"] as? String == "Discord")
+		#expect(json["configContract"] as? String == "DiscordSettings")
+		#expect(json["infoLink"] as? String == "https://wiki.servarr.com/sonarr/settings#connect")
+		#expect(json["tags"] as? [Int] == [])
+		#expect(json["onGrab"] as? Bool == true)
+		#expect(json["onDownload"] as? Bool == true)
+		#expect(json["onUpgrade"] as? Bool == false)
+		#expect(json["supportsOnGrab"] as? Bool == true)
+		#expect(json["supportsOnDownload"] as? Bool == true)
 	}
 
 	@Test func notificationResourceDecoding() throws {

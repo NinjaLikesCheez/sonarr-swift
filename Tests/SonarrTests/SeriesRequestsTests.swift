@@ -67,8 +67,28 @@ struct SeriesRequestsTests {
 		#expect(request.path == "api/v3/series/import")
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode([SeriesResource].self, from: try body.encode())
-		#expect(decoded == [sampleSeries])
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [[String: Any]])
+
+		#expect(json.count == 1)
+		let series = try #require(json.first)
+		#expect(series["id"] as? Int == 1)
+		#expect(series["title"] as? String == "Some Show")
+		#expect(series["status"] as? String == "continuing")
+		#expect(series["year"] as? Int == 2020)
+		#expect(series["path"] as? String == "/media/Some Show")
+		#expect(series["qualityProfileId"] as? Int == 1)
+		#expect(series["seasonFolder"] as? Bool == true)
+		#expect(series["monitored"] as? Bool == true)
+		#expect(series["monitorNewItems"] as? String == "all")
+		#expect(series["useSceneNumbering"] as? Bool == false)
+		#expect(series["runtime"] as? Int == 30)
+		#expect(series["tvdbId"] as? Int == 12345)
+		#expect(series["tvRageId"] as? Int == 0)
+		#expect(series["tvMazeId"] as? Int == 0)
+		#expect(series["tmdbId"] as? Int == 0)
+		#expect(series["seriesType"] as? String == "standard")
+		#expect(series["tags"] as? [Int] == [])
 	}
 
 	@Test func lookupSeriesRequestConstructionWithDefaults() {
@@ -123,8 +143,26 @@ struct SeriesRequestsTests {
 		#expect(request.path == "api/v3/series")
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(SeriesResource.self, from: try body.encode())
-		#expect(decoded == sampleSeries)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["id"] as? Int == 1)
+		#expect(json["title"] as? String == "Some Show")
+		#expect(json["status"] as? String == "continuing")
+		#expect(json["year"] as? Int == 2020)
+		#expect(json["path"] as? String == "/media/Some Show")
+		#expect(json["qualityProfileId"] as? Int == 1)
+		#expect(json["seasonFolder"] as? Bool == true)
+		#expect(json["monitored"] as? Bool == true)
+		#expect(json["monitorNewItems"] as? String == "all")
+		#expect(json["useSceneNumbering"] as? Bool == false)
+		#expect(json["runtime"] as? Int == 30)
+		#expect(json["tvdbId"] as? Int == 12345)
+		#expect(json["tvRageId"] as? Int == 0)
+		#expect(json["tvMazeId"] as? Int == 0)
+		#expect(json["tmdbId"] as? Int == 0)
+		#expect(json["seriesType"] as? String == "standard")
+		#expect(json["tags"] as? [Int] == [])
 	}
 
 	// Encoding/decoding a Date field with the same model's Codable conformance would pass even if the
@@ -157,8 +195,26 @@ struct SeriesRequestsTests {
 		#expect(components?.queryItems == [URLQueryItem(name: "moveFiles", value: "false")])
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(SeriesResource.self, from: try body.encode())
-		#expect(decoded == sampleSeries)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["id"] as? Int == 1)
+		#expect(json["title"] as? String == "Some Show")
+		#expect(json["status"] as? String == "continuing")
+		#expect(json["year"] as? Int == 2020)
+		#expect(json["path"] as? String == "/media/Some Show")
+		#expect(json["qualityProfileId"] as? Int == 1)
+		#expect(json["seasonFolder"] as? Bool == true)
+		#expect(json["monitored"] as? Bool == true)
+		#expect(json["monitorNewItems"] as? String == "all")
+		#expect(json["useSceneNumbering"] as? Bool == false)
+		#expect(json["runtime"] as? Int == 30)
+		#expect(json["tvdbId"] as? Int == 12345)
+		#expect(json["tvRageId"] as? Int == 0)
+		#expect(json["tvMazeId"] as? Int == 0)
+		#expect(json["tmdbId"] as? Int == 0)
+		#expect(json["seriesType"] as? String == "standard")
+		#expect(json["tags"] as? [Int] == [])
 	}
 
 	@Test func updateSeriesRequestConstructionWithMoveFiles() {

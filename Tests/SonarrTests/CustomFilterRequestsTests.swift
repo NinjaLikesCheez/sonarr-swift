@@ -41,8 +41,18 @@ struct CustomFilterRequestsTests {
 		#expect(request.path == "api/v3/customfilter")
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(CustomFilterResource.self, from: try body.encode())
-		#expect(decoded == sampleCustomFilter)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["id"] as? Int == 1)
+		#expect(json["type"] as? String == "series")
+		#expect(json["label"] as? String == "Continuing Anime")
+		let filters = try #require(json["filters"] as? [[String: Any]])
+		#expect(filters.count == 2)
+		#expect(filters.first?["key"] as? String == "status")
+		#expect(filters.first?["value"] as? String == "continuing")
+		#expect(filters.last?["key"] as? String == "genres")
+		#expect(filters.last?["value"] as? [String] == ["Anime"])
 	}
 
 	@Test func updateCustomFilterRequestConstruction() throws {
@@ -52,8 +62,18 @@ struct CustomFilterRequestsTests {
 		#expect(request.path == "api/v3/customfilter/1")
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(CustomFilterResource.self, from: try body.encode())
-		#expect(decoded == sampleCustomFilter)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["id"] as? Int == 1)
+		#expect(json["type"] as? String == "series")
+		#expect(json["label"] as? String == "Continuing Anime")
+		let filters = try #require(json["filters"] as? [[String: Any]])
+		#expect(filters.count == 2)
+		#expect(filters.first?["key"] as? String == "status")
+		#expect(filters.first?["value"] as? String == "continuing")
+		#expect(filters.last?["key"] as? String == "genres")
+		#expect(filters.last?["value"] as? [String] == ["Anime"])
 	}
 
 	@Test func deleteCustomFilterRequestConstruction() {
