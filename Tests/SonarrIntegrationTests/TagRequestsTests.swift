@@ -16,6 +16,13 @@ struct TagRequestsTests {
 		let fetched = try await client.request(.tag(id: id))
 		#expect(fetched.id == id)
 
+		let details = try await client.request(.tagDetails(id: id))
+		#expect(details.id == id)
+		#expect(details.seriesIds?.isEmpty != false)
+
+		let allDetails = try await client.request(.tagDetails)
+		#expect(allDetails.contains(where: { $0.id == id }))
+
 		let updated = try await client.request(
 			.updateTag(id: id, TagResource(id: id, label: "integration-test-tag-renamed")))
 		#expect(updated.label == "integration-test-tag-renamed")
