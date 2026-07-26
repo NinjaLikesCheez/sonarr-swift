@@ -1,26 +1,13 @@
-import APIClient
 import Sonarr
 import Testing
 
-// Tags aren't covered by this issue's tag (see the Tag OpenAPI group), but AutoTagging requires at least one
-// existing tag ID to attach - create one directly here rather than pulling in unrelated library surface.
-private struct TagResource: Codable {
-	let id: Int?
-	let label: String
-}
-
 private func createTag(label: String) async throws -> Int {
-	let request = SonarrRequest<TagResource>(
-		method: .post,
-		path: "api/v3/tag",
-		body: { JSONBody(TagResource(id: nil, label: label)) }
-	)
-	let tag = try await client.request(request)
+	let tag = try await client.request(.addTag(TagResource(label: label)))
 	return try #require(tag.id)
 }
 
 private func deleteTag(id: Int) async throws {
-	try await client.request(SonarrRequest<EmptyResponse>(method: .delete, path: "api/v3/tag/\(id)"))
+	try await client.request(.deleteTag(id: id))
 }
 
 @Suite("AutoTagging Requests", .serialized)
