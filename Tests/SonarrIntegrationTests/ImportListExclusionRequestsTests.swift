@@ -28,7 +28,7 @@ struct ImportListExclusionRequestsTests {
 		try await client.request(.deleteImportListExclusion(id: id))
 
 		let remaining = try await client.request(.importListExclusions(pageSize: 1000))
-		#expect(!remaining.records.contains(where: { $0.id == id }))
+		#expect(!(remaining.records ?? []).contains(where: { $0.id == id }))
 	}
 
 	@Test

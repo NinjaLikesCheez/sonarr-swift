@@ -16,7 +16,7 @@ public extension SonarrRequest where SonarrResponse == PagingResource<QueueResou
 	///   - page: The page number to fetch, 1-indexed.
 	///   - pageSize: The number of records per page.
 	///   - sortKey: The field to sort by, e.g. `timeleft`.
-	///   - sortDirection: The direction to sort in, e.g. `ascending` or `descending`.
+	///   - sortDirection: The direction to sort in.
 	///   - includeUnknownSeriesItems: Whether to include queue items not associated with a known series.
 	///   - includeSeries: Whether to attach series details to each item.
 	///   - includeEpisode: Whether to attach episode details to each item.
@@ -29,7 +29,7 @@ public extension SonarrRequest where SonarrResponse == PagingResource<QueueResou
 		page: Int? = nil,
 		pageSize: Int? = nil,
 		sortKey: String? = nil,
-		sortDirection: String? = nil,
+		sortDirection: SortDirection? = nil,
 		includeUnknownSeriesItems: Bool = false,
 		includeSeries: Bool = false,
 		includeEpisode: Bool = false,
@@ -58,7 +58,7 @@ public extension SonarrRequest where SonarrResponse == PagingResource<QueueResou
 		}
 
 		if let sortDirection {
-			queryItems.append(URLQueryItem(name: "sortDirection", value: sortDirection))
+			queryItems.append(URLQueryItem(name: "sortDirection", value: sortDirection.rawValue))
 		}
 
 		if let `protocol` {

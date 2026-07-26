@@ -16,7 +16,7 @@ public extension SonarrRequest where SonarrResponse == PagingResource<HistoryRes
 	///   - page: The page number to fetch, 1-indexed.
 	///   - pageSize: The number of records per page.
 	///   - sortKey: The field to sort by, e.g. `date`.
-	///   - sortDirection: The direction to sort in, e.g. `ascending` or `descending`.
+	///   - sortDirection: The direction to sort in.
 	///   - includeSeries: Whether to attach series details to each event.
 	///   - includeEpisode: Whether to attach episode details to each event.
 	///   - eventTypes: Restricts results to events of the given types.
@@ -29,7 +29,7 @@ public extension SonarrRequest where SonarrResponse == PagingResource<HistoryRes
 		page: Int? = nil,
 		pageSize: Int? = nil,
 		sortKey: String? = nil,
-		sortDirection: String? = nil,
+		sortDirection: SortDirection? = nil,
 		includeSeries: Bool = false,
 		includeEpisode: Bool = false,
 		eventTypes: [EpisodeHistoryEventType] = [],
@@ -57,7 +57,7 @@ public extension SonarrRequest where SonarrResponse == PagingResource<HistoryRes
 		}
 
 		if let sortDirection {
-			queryItems.append(URLQueryItem(name: "sortDirection", value: sortDirection))
+			queryItems.append(URLQueryItem(name: "sortDirection", value: sortDirection.rawValue))
 		}
 
 		if let episodeId {

@@ -33,7 +33,7 @@ struct HistoryRequestsTests {
 			page: 2,
 			pageSize: 25,
 			sortKey: "date",
-			sortDirection: "descending",
+			sortDirection: .descending,
 			includeSeries: true,
 			includeEpisode: true,
 			eventTypes: [.grabbed, .downloadFailed],
@@ -194,9 +194,9 @@ struct HistoryRequestsTests {
 
 		#expect(page.page == 1)
 		#expect(page.totalRecords == 1)
-		#expect(page.records.count == 1)
+		#expect(page.records?.count == 1)
 
-		let entry = try #require(page.records.first)
+		let entry = try #require(page.records?.first)
 		#expect(entry.id == 1)
 		#expect(entry.episodeId == 10)
 		#expect(entry.seriesId == 5)

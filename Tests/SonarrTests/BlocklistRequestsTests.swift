@@ -25,7 +25,7 @@ struct BlocklistRequestsTests {
 			page: 2,
 			pageSize: 25,
 			sortKey: "date",
-			sortDirection: "descending",
+			sortDirection: .descending,
 			seriesIds: [1, 2],
 			protocols: [.usenet, .torrent]
 		)
@@ -95,9 +95,11 @@ struct BlocklistRequestsTests {
 
 		#expect(page.page == 1)
 		#expect(page.totalRecords == 1)
-		#expect(page.records.count == 1)
+		#expect(page.sortKey == "date")
+		#expect(page.sortDirection == .descending)
+		#expect(page.records?.count == 1)
 
-		let entry = try #require(page.records.first)
+		let entry = try #require(page.records?.first)
 		#expect(entry.id == 1)
 		#expect(entry.seriesId == 5)
 		#expect(entry.episodeIds == [10, 11])

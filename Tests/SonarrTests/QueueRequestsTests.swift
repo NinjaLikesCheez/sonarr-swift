@@ -34,7 +34,7 @@ struct QueueRequestsTests {
 			page: 2,
 			pageSize: 25,
 			sortKey: "timeleft",
-			sortDirection: "descending",
+			sortDirection: .descending,
 			includeUnknownSeriesItems: true,
 			includeSeries: true,
 			includeEpisode: true,
@@ -327,9 +327,9 @@ struct QueueRequestsTests {
 
 		#expect(page.page == 1)
 		#expect(page.totalRecords == 1)
-		#expect(page.records.count == 1)
+		#expect(page.records?.count == 1)
 
-		let item = try #require(page.records.first)
+		let item = try #require(page.records?.first)
 		#expect(item.id == 1)
 		#expect(item.seriesId == 5)
 		#expect(item.episodeId == 10)
