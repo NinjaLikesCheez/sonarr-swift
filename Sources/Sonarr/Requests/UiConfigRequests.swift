@@ -35,6 +35,6 @@ public extension SonarrRequest where SonarrResponse == UiConfigResource {
 		id: Int,
 		_ uiConfig: UiConfigResource
 	) -> SonarrRequest<UiConfigResource> {
-		SonarrRequest(method: .put, path: "api/v3/config/ui/\(id)", body: { JSONBody(uiConfig) })
+		SonarrRequest(method: .put, path: "api/v3/config/ui/\(id)", body: { JSONBody(uiConfig, encoder: sonarrEncoder) })
 	}
 }

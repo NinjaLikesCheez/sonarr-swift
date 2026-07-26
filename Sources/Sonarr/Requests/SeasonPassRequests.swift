@@ -8,6 +8,6 @@ public extension SonarrRequest where SonarrResponse == EmptyResponse {
 	///
 	/// - Parameter seasonPass: The season monitoring changes to apply.
 	static func updateSeasonPass(_ seasonPass: SeasonPassResource) -> SonarrRequest<EmptyResponse> {
-		SonarrRequest(method: .post, path: "api/v3/seasonpass", body: { JSONBody(seasonPass) })
+		SonarrRequest(method: .post, path: "api/v3/seasonpass", body: { JSONBody(seasonPass, encoder: sonarrEncoder) })
 	}
 }

@@ -54,7 +54,7 @@ public extension SonarrRequest where SonarrResponse == MetadataResource {
 			method: .post,
 			path: "api/v3/metadata",
 			queryItems: [URLQueryItem(name: "forceSave", value: String(forceSave))],
-			body: { JSONBody(metadataConsumer) }
+			body: { JSONBody(metadataConsumer, encoder: sonarrEncoder) }
 		)
 	}
 
@@ -77,7 +77,7 @@ public extension SonarrRequest where SonarrResponse == MetadataResource {
 			method: .put,
 			path: "api/v3/metadata/\(id)",
 			queryItems: [URLQueryItem(name: "forceSave", value: String(forceSave))],
-			body: { JSONBody(metadataConsumer) }
+			body: { JSONBody(metadataConsumer, encoder: sonarrEncoder) }
 		)
 	}
 }
@@ -107,7 +107,7 @@ public extension SonarrRequest where SonarrResponse == EmptyResponse {
 			method: .post,
 			path: "api/v3/metadata/test",
 			queryItems: [URLQueryItem(name: "forceTest", value: String(forceTest))],
-			body: { JSONBody(metadataConsumer) }
+			body: { JSONBody(metadataConsumer, encoder: sonarrEncoder) }
 		)
 	}
 
@@ -132,7 +132,7 @@ public extension SonarrRequest where SonarrResponse == EmptyResponse {
 		SonarrRequest(
 			method: .post,
 			path: "api/v3/metadata/action/\(name)",
-			body: { JSONBody(metadataConsumer) }
+			body: { JSONBody(metadataConsumer, encoder: sonarrEncoder) }
 		)
 	}
 }

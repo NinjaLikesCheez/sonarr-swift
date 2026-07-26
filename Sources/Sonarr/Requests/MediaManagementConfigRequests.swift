@@ -42,7 +42,7 @@ public extension SonarrRequest where SonarrResponse == MediaManagementConfigReso
 		SonarrRequest(
 			method: .put,
 			path: "api/v3/config/mediamanagement/\(id)",
-			body: { JSONBody(mediaManagementConfig) }
+			body: { JSONBody(mediaManagementConfig, encoder: sonarrEncoder) }
 		)
 	}
 }

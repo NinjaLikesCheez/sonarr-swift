@@ -42,7 +42,7 @@ public extension SonarrRequest where SonarrResponse == ImportListConfigResource 
 		SonarrRequest(
 			method: .put,
 			path: "api/v3/config/importlist/\(id)",
-			body: { JSONBody(importListConfig) }
+			body: { JSONBody(importListConfig, encoder: sonarrEncoder) }
 		)
 	}
 }

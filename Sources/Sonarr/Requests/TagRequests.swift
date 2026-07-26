@@ -32,7 +32,7 @@ public extension SonarrRequest where SonarrResponse == TagResource {
 	///
 	/// - Parameter tag: The tag to create.
 	static func addTag(_ tag: TagResource) -> SonarrRequest<TagResource> {
-		SonarrRequest(method: .post, path: "api/v3/tag", body: { JSONBody(tag) })
+		SonarrRequest(method: .post, path: "api/v3/tag", body: { JSONBody(tag, encoder: sonarrEncoder) })
 	}
 
 	/// Updates an existing tag.
@@ -45,7 +45,7 @@ public extension SonarrRequest where SonarrResponse == TagResource {
 	///   - id: The unique identifier of the tag to update.
 	///   - tag: The new tag.
 	static func updateTag(id: Int, _ tag: TagResource) -> SonarrRequest<TagResource> {
-		SonarrRequest(method: .put, path: "api/v3/tag/\(id)", body: { JSONBody(tag) })
+		SonarrRequest(method: .put, path: "api/v3/tag/\(id)", body: { JSONBody(tag, encoder: sonarrEncoder) })
 	}
 
 	/// Gets a single tag.

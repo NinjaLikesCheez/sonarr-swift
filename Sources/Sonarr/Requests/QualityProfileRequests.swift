@@ -21,7 +21,8 @@ public extension SonarrRequest where SonarrResponse == QualityProfileResource {
 	///
 	/// - Parameter qualityProfile: The quality profile to create.
 	static func addQualityProfile(_ qualityProfile: QualityProfileResource) -> SonarrRequest<QualityProfileResource> {
-		SonarrRequest(method: .post, path: "api/v3/qualityprofile", body: { JSONBody(qualityProfile) })
+		SonarrRequest(
+			method: .post, path: "api/v3/qualityprofile", body: { JSONBody(qualityProfile, encoder: sonarrEncoder) })
 	}
 
 	/// Updates an existing quality profile.
@@ -37,7 +38,8 @@ public extension SonarrRequest where SonarrResponse == QualityProfileResource {
 		id: Int,
 		_ qualityProfile: QualityProfileResource
 	) -> SonarrRequest<QualityProfileResource> {
-		SonarrRequest(method: .put, path: "api/v3/qualityprofile/\(id)", body: { JSONBody(qualityProfile) })
+		SonarrRequest(
+			method: .put, path: "api/v3/qualityprofile/\(id)", body: { JSONBody(qualityProfile, encoder: sonarrEncoder) })
 	}
 
 	/// Gets a single quality profile.

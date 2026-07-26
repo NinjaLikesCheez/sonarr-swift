@@ -21,7 +21,7 @@ public extension SonarrRequest where SonarrResponse == RootFolderResource {
 	///
 	/// - Parameter rootFolder: The root folder to create.
 	static func addRootFolder(_ rootFolder: RootFolderResource) -> SonarrRequest<RootFolderResource> {
-		SonarrRequest(method: .post, path: "api/v3/rootfolder", body: { JSONBody(rootFolder) })
+		SonarrRequest(method: .post, path: "api/v3/rootfolder", body: { JSONBody(rootFolder, encoder: sonarrEncoder) })
 	}
 
 	/// Gets a single root folder.

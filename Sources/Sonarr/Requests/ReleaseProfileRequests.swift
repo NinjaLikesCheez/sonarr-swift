@@ -21,7 +21,8 @@ public extension SonarrRequest where SonarrResponse == ReleaseProfileResource {
 	///
 	/// - Parameter releaseProfile: The release profile to create.
 	static func addReleaseProfile(_ releaseProfile: ReleaseProfileResource) -> SonarrRequest<ReleaseProfileResource> {
-		SonarrRequest(method: .post, path: "api/v3/releaseprofile", body: { JSONBody(releaseProfile) })
+		SonarrRequest(
+			method: .post, path: "api/v3/releaseprofile", body: { JSONBody(releaseProfile, encoder: sonarrEncoder) })
 	}
 
 	/// Updates an existing release profile.
@@ -37,7 +38,8 @@ public extension SonarrRequest where SonarrResponse == ReleaseProfileResource {
 		id: Int,
 		_ releaseProfile: ReleaseProfileResource
 	) -> SonarrRequest<ReleaseProfileResource> {
-		SonarrRequest(method: .put, path: "api/v3/releaseprofile/\(id)", body: { JSONBody(releaseProfile) })
+		SonarrRequest(
+			method: .put, path: "api/v3/releaseprofile/\(id)", body: { JSONBody(releaseProfile, encoder: sonarrEncoder) })
 	}
 
 	/// Gets a single release profile.

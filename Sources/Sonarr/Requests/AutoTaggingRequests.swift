@@ -31,7 +31,7 @@ public extension SonarrRequest where SonarrResponse == AutoTaggingResource {
 	///
 	/// - Parameter autoTagging: The auto-tagging definition to create.
 	static func addAutoTagging(_ autoTagging: AutoTaggingResource) -> SonarrRequest<AutoTaggingResource> {
-		SonarrRequest(method: .post, path: "api/v3/autotagging", body: { JSONBody(autoTagging) })
+		SonarrRequest(method: .post, path: "api/v3/autotagging", body: { JSONBody(autoTagging, encoder: sonarrEncoder) })
 	}
 
 	/// Updates an existing auto-tagging definition.
@@ -44,7 +44,8 @@ public extension SonarrRequest where SonarrResponse == AutoTaggingResource {
 	///   - id: The unique identifier of the auto-tag to update.
 	///   - autoTagging: The new auto-tagging definition.
 	static func updateAutoTagging(id: Int, _ autoTagging: AutoTaggingResource) -> SonarrRequest<AutoTaggingResource> {
-		SonarrRequest(method: .put, path: "api/v3/autotagging/\(id)", body: { JSONBody(autoTagging) })
+		SonarrRequest(
+			method: .put, path: "api/v3/autotagging/\(id)", body: { JSONBody(autoTagging, encoder: sonarrEncoder) })
 	}
 }
 

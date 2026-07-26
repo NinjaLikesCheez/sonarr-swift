@@ -42,7 +42,7 @@ public extension SonarrRequest where SonarrResponse == DownloadClientConfigResou
 		SonarrRequest(
 			method: .put,
 			path: "api/v3/config/downloadclient/\(id)",
-			body: { JSONBody(downloadClientConfig) }
+			body: { JSONBody(downloadClientConfig, encoder: sonarrEncoder) }
 		)
 	}
 }

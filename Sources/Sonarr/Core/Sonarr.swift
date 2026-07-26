@@ -86,6 +86,17 @@ public final class Sonarr: Client, Sendable {
 		return decoder
 	}
 
+	/// The encoder used for every JSON request body sent to Sonarr.
+	///
+	/// The default `JSONEncoder` has no `dateEncodingStrategy`, so `Date` fields would serialize as raw
+	/// epoch-seconds numbers instead of the ISO 8601 strings Sonarr expects - use this whenever a request
+	/// body is built with `JSONBody`.
+	static func makeEncoder() -> JSONEncoder {
+		let encoder = JSONEncoder()
+		encoder.dateEncodingStrategy = .iso8601
+		return encoder
+	}
+
 	@Sendable
 	private static func validate(data: Data, response: HTTPURLResponse) throws(Sonarr.Error) {
 		switch response.statusCode {
