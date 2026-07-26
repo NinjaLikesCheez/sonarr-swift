@@ -3,10 +3,9 @@ import Testing
 
 @Suite("Series Requests", .serialized)
 struct SeriesRequestsTests {
-	@Test
-	func test_series() async throws {
-		try await client.request(.series())
-	}
+	// .series() is already exercised (and its results asserted on) by the lifecycle test below, both
+	// before adding and after deleting the test series - a standalone smoke test here would only ever
+	// assert that the endpoint decodes, which that test already establishes as a side effect.
 
 	@Test
 	func test_addSeries_series_seriesById_updateSeries_deleteSeries() async throws {

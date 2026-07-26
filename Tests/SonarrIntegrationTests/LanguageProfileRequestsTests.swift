@@ -41,9 +41,11 @@ struct LanguageProfileRequestsTests {
 			.addLanguageProfile(LanguageProfileResource(name: "Integration Test Profile"))
 		)
 
-		if let id = created.id {
-			try await client.request(.deleteLanguageProfile(id: id))
-		}
+		// As noted above, POST /api/v3/languageprofile responds with a placeholder body that never
+		// carries an id, so deleteLanguageProfile can't be exercised from here - assert that documented
+		// behavior explicitly instead of silently skipping it via `if let`.
+		#expect(created.id == nil)
+		#expect(created.name == "Integration Test Profile")
 	}
 
 	@available(*, deprecated)
