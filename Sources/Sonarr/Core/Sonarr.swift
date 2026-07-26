@@ -120,6 +120,8 @@ public final class Sonarr: Client, Sendable {
 			throw .response(.statusCode(response.statusCode, message: errorMessage(from: data)))
 		case 401:
 			throw .response(.unauthorized)
+		case 403:
+			throw .response(.forbidden(message: errorMessage(from: data)))
 		case 404:
 			throw .response(.notFound(message: errorMessage(from: data)))
 		case let statusCode:
@@ -128,6 +130,10 @@ public final class Sonarr: Client, Sendable {
 	}
 
 	/// Extracts a human-readable message from Sonarr's error envelope, falling back to the raw body.
+	///
+	/// Only falls back to the raw body when it looks like plain text; a non-2xx response from something
+	/// in front of Sonarr (a reverse proxy, a load balancer) can return an HTML error page instead of
+	/// Sonarr's own JSON envelope, and surfacing that whole document as the "message" isn't useful.
 	private static func errorMessage(from data: Data) -> String? {
 		if let error = try? JSONDecoder().decode(ErrorResponse.self, from: data),
 			let message = error.message ?? error.description
@@ -135,9 +141,12 @@ public final class Sonarr: Client, Sendable {
 			return message
 		}
 
-		guard !data.isEmpty else { return nil }
+		guard !data.isEmpty, let text = String(bytes: data, encoding: .utf8) else { return nil }
 
-		return String(bytes: data, encoding: .utf8)
+		let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+		guard !trimmed.hasPrefix("<") else { return nil }
+
+		return text
 	}
 }
 

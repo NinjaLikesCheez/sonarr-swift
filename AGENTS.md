@@ -35,7 +35,7 @@ Formatting/linting uses `xcrun swift-format` with the config in `.swift-format` 
 
 ### Error model
 
-`Sonarr.Error` (the client's associated `Error` type) is `APIClient.ClientError<SonarrResponseError>`. `SonarrResponseError` ([Sources/Sonarr/Core/SonarrError.swift](Sources/Sonarr/Core/SonarrError.swift)) models the HTTP-level failures: `.unauthorized` (401 — bad/missing API key), `.notFound`, `.validation([ValidationFailure])` (400 with field-level failures), and `.statusCode(_:message:)` for everything else.
+`Sonarr.Error` (the client's associated `Error` type) is `APIClient.ClientError<SonarrResponseError>`. `SonarrResponseError` ([Sources/Sonarr/Core/SonarrError.swift](Sources/Sonarr/Core/SonarrError.swift)) models the HTTP-level failures: `.unauthorized` (401 — bad/missing API key), `.forbidden` (403 — valid key, insufficient permission), `.notFound`, `.validation([ValidationFailure])` (400 with field-level failures), and `.statusCode(_:message:)` for everything else. It's `Equatable` and conforms to `LocalizedError`.
 
 ### Models
 
