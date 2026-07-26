@@ -5,7 +5,10 @@ import Testing
 struct ManualImportRequestsTests {
 	@Test
 	func test_manualImport() async throws {
-		_ = try await client.request(.manualImport(folder: "/config"))
+		// /config has no importable media, so this always returns an empty list on a fresh server -
+		// the meaningful assertion here is that the response decodes, not its contents.
+		let manualImports = try await client.request(.manualImport(folder: "/config"))
+		#expect(manualImports.isEmpty)
 	}
 
 	@Test

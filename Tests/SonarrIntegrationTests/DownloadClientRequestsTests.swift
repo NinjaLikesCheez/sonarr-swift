@@ -99,6 +99,10 @@ struct DownloadClientRequestsTests {
 			.updateDownloadClients(DownloadClientBulkResource(ids: [firstID, secondID], priority: 3))
 		)
 
+		let updated = try await client.request(.downloadClients)
+		#expect(updated.first(where: { $0.id == firstID })?.priority == 3)
+		#expect(updated.first(where: { $0.id == secondID })?.priority == 3)
+
 		try await client.request(.deleteDownloadClients(DownloadClientBulkResource(ids: [firstID, secondID])))
 
 		let remaining = try await client.request(.downloadClients)

@@ -5,7 +5,10 @@ import Testing
 struct ReleaseRequestsTests {
 	@Test
 	func test_releases() async throws {
-		try await client.request(.releases())
+		// A fresh server has no indexers configured, so there's nothing to search - the meaningful
+		// assertion here is that the response decodes, not its contents.
+		let releases = try await client.request(.releases())
+		#expect(releases.isEmpty)
 	}
 
 	@Test

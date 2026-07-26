@@ -5,6 +5,10 @@ import Testing
 struct UpdateRequestsTests {
 	@Test
 	func test_updates() async throws {
-		try await client.request(.updates)
+		let updates = try await client.request(.updates)
+
+		// The container image always ships with at least its own installed version in the update history.
+		#expect(!updates.isEmpty)
+		#expect(updates.contains(where: { $0.installed == true }))
 	}
 }
