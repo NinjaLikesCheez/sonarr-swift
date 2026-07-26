@@ -14,10 +14,11 @@ Endpoint coverage is tracked as GitHub issues, one per Sonarr API group (tag in 
 - Format (in place): `scripts/format.sh`
 - Lint (check only): `scripts/lint.sh` — use `scripts/lint.sh --strict` to match CI
 - Full CI sequence locally: `scripts/run_ci.sh` (requires a clean git tree; fails if `scripts/format.sh` produces changes, then lints strictly, then does a clean `swift build`)
-- Run tests: `swift test`
-- Run a single test: `swift test --filter <SuiteName>/<testMethodName>`
+- Run unit tests: `swift test --filter SonarrTests` (fast, no server needed - prefer this day-to-day)
+- Run integration tests: `scripts/run_integration_tests.sh` (starts a `linuxserver/sonarr` container via Docker/Podman, waits for it to come up, then runs `swift test --no-parallel --filter SonarrIntegrationTests` against it). Don't invoke `SonarrIntegrationTests` directly with plain `swift test` - every suite is `.serialized` internally, but nothing prevents two *different* integration suites from running concurrently with each other outside of the script's `--no-parallel`, and several suites register the same server-side state (e.g. a `/media` root folder) that isn't safe to touch from two suites at once. Bare `swift test` (no `--filter`) also runs both targets together and will crash immediately if `SONARR_API_KEY` isn't set - always scope to one target explicitly.
+- Run a single test: `swift test --filter <SuiteName>/<testMethodName>` (still scope this by target when the same suite name exists in both `SonarrTests` and `SonarrIntegrationTests`, e.g. `swift test --filter SonarrTests.SeriesRequestsTests`)
 
-Formatting/linting uses `xcrun swift-format` with the config in `.swift-format` (tabs, 120 col line length, enforced import ordering). CI (`.github/workflows/ci.yml`) runs on `macos-15` via `scripts/run_ci.sh` and will fail if code isn't pre-formatted; `.github/workflows/test.yml` runs `swift test` on Linux.
+Formatting/linting uses `xcrun swift-format` with the config in `.swift-format` (tabs, 120 col line length, enforced import ordering). CI (`.github/workflows/ci.yml`) runs on `macos-15` via `scripts/run_ci.sh` and will fail if code isn't pre-formatted; `.github/workflows/test.yml` runs on Linux as two separate jobs, `swift test --filter SonarrTests` and `scripts/run_integration_tests.sh` - never a bare `swift test`.
 
 ## Architecture
 

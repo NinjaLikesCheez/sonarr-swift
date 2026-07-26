@@ -108,7 +108,7 @@ public extension SonarrRequest where SonarrResponse == [HistoryResource] {
 		]
 
 		if let date {
-			queryItems.append(URLQueryItem(name: "date", value: ISO8601DateFormatter().string(from: date)))
+			queryItems.append(URLQueryItem(name: "date", value: Sonarr.iso8601Formatter.string(from: date)))
 		}
 
 		if let eventType {

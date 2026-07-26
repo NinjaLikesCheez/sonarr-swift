@@ -3,7 +3,7 @@
 A Swift Concurrency powered [Sonarr](https://sonarr.tv) v3 REST API client, built on [swift-api-client](https://github.com/NinjaLikesCheez/swift-api-client) and following the same design as [Deluge-Swift](https://github.com/NinjaLikesCheez/Deluge-Swift).
 
 > [!NOTE]
-> This is currently the base client only — endpoint coverage is being added incrementally, tracked in [issues](../../issues), one per Sonarr API group.
+> Endpoint coverage is tracked in [issues](../../issues), one per Sonarr API group.
 
 ## Usage
 
@@ -13,19 +13,19 @@ Create a client with your server URL and API key (Sonarr → Settings → Genera
 import Sonarr
 
 let client = Sonarr(baseURL: URL(string: "http://localhost:8989")!, apiKey: "your-api-key")
-let series = try await client.request(.series)
+let series = try await client.request(.series())
 ```
 
 ## Requests
 
-A `SonarrRequest` describes an endpoint's HTTP method, path, query parameters, body, and (optionally) a transform for the response. Endpoints are exposed as static factories on `SonarrRequest`, so call sites read fluently: `client.request(.series)`.
+A `SonarrRequest` describes an endpoint's HTTP method, path, query parameters, body, and (optionally) a transform for the response. Endpoints are exposed as static factories on `SonarrRequest`, so call sites read fluently: `client.request(.series())`.
 
 ```swift
-extension SonarrRequest<[Series]> {
+extension SonarrRequest where SonarrResponse == [SeriesResource] {
     /// Fetches all series.
     ///
     /// Endpoint: `GET /api/v3/series`
-    static var series: SonarrRequest<[Series]> {
+    static func series() -> SonarrRequest<[SeriesResource]> {
         SonarrRequest(method: .get, path: "api/v3/series")
     }
 }
