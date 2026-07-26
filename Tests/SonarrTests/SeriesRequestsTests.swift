@@ -127,6 +127,24 @@ struct SeriesRequestsTests {
 		#expect(decoded == sampleSeries)
 	}
 
+	// Encoding/decoding a Date field with the same model's Codable conformance would pass even if the
+	// wire format were wrong (e.g. raw epoch seconds instead of ISO 8601), since both sides would agree
+	// on the same incorrect shape - assert the actual bytes on the wire instead.
+	@Test func addSeriesRequestConstructionEncodesDatesAsISO8601() throws {
+		let series = SeriesResource(
+			id: 1,
+			title: "Some Show",
+			added: Date(timeIntervalSince1970: 1_710_295_200)  // 2024-03-13T02:00:00Z
+		)
+
+		let request = SonarrRequest.addSeries(series)
+		let body = try #require(try request.body())
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["added"] as? String == "2024-03-13T02:00:00Z")
+	}
+
 	@Test func updateSeriesRequestConstructionWithDefaults() throws {
 		let request = SonarrRequest.updateSeries(id: 1, sampleSeries)
 

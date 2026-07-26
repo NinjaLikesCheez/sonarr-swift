@@ -176,7 +176,7 @@ public extension SonarrRequest where SonarrResponse == EmptyResponse {
 				URLQueryItem(name: "skipRedownload", value: String(skipRedownload)),
 				URLQueryItem(name: "changeCategory", value: String(changeCategory)),
 			],
-			body: { JSONBody(QueueBulkResource(ids: ids)) }
+			body: { JSONBody(QueueBulkResource(ids: ids), encoder: sonarrEncoder) }
 		)
 	}
 
@@ -198,7 +198,7 @@ public extension SonarrRequest where SonarrResponse == EmptyResponse {
 		SonarrRequest(
 			method: .post,
 			path: "api/v3/queue/grab/bulk",
-			body: { JSONBody(QueueBulkResource(ids: ids)) }
+			body: { JSONBody(QueueBulkResource(ids: ids), encoder: sonarrEncoder) }
 		)
 	}
 }

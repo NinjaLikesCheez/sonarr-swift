@@ -34,7 +34,7 @@ public extension SonarrRequest where SonarrResponse == [SeriesResource] {
 	///
 	/// - Parameter series: The series to import.
 	static func importSeries(_ series: [SeriesResource]) -> SonarrRequest<[SeriesResource]> {
-		SonarrRequest(method: .post, path: "api/v3/series/import", body: { JSONBody(series) })
+		SonarrRequest(method: .post, path: "api/v3/series/import", body: { JSONBody(series, encoder: sonarrEncoder) })
 	}
 
 	/// Searches TheTVDB for series matching a search term.
@@ -64,7 +64,7 @@ public extension SonarrRequest where SonarrResponse == SeriesResource {
 	///
 	/// - Parameter series: The series to add.
 	static func addSeries(_ series: SeriesResource) -> SonarrRequest<SeriesResource> {
-		SonarrRequest(method: .post, path: "api/v3/series", body: { JSONBody(series) })
+		SonarrRequest(method: .post, path: "api/v3/series", body: { JSONBody(series, encoder: sonarrEncoder) })
 	}
 
 	/// Gets a single series.
@@ -103,7 +103,7 @@ public extension SonarrRequest where SonarrResponse == SeriesResource {
 			method: .put,
 			path: "api/v3/series/\(id)",
 			queryItems: [URLQueryItem(name: "moveFiles", value: String(moveFiles))],
-			body: { JSONBody(series) }
+			body: { JSONBody(series, encoder: sonarrEncoder) }
 		)
 	}
 }
@@ -151,7 +151,7 @@ public extension SonarrRequest where SonarrResponse == EmptyResponse {
 	///
 	/// - Parameter seriesEditor: The changes to apply to the given series.
 	static func editSeries(_ seriesEditor: SeriesEditorResource) -> SonarrRequest<EmptyResponse> {
-		SonarrRequest(method: .put, path: "api/v3/series/editor", body: { JSONBody(seriesEditor) })
+		SonarrRequest(method: .put, path: "api/v3/series/editor", body: { JSONBody(seriesEditor, encoder: sonarrEncoder) })
 	}
 
 	/// Bulk-deletes multiple series at once.
@@ -160,6 +160,7 @@ public extension SonarrRequest where SonarrResponse == EmptyResponse {
 	///
 	/// - Parameter seriesEditor: The series to delete and how to delete them.
 	static func deleteSeries(inBulk seriesEditor: SeriesEditorResource) -> SonarrRequest<EmptyResponse> {
-		SonarrRequest(method: .delete, path: "api/v3/series/editor", body: { JSONBody(seriesEditor) })
+		SonarrRequest(
+			method: .delete, path: "api/v3/series/editor", body: { JSONBody(seriesEditor, encoder: sonarrEncoder) })
 	}
 }

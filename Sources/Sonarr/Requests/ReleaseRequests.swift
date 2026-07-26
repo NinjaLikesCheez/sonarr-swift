@@ -42,7 +42,7 @@ public extension SonarrRequest where SonarrResponse == [ReleaseResource] {
 	///
 	/// - Parameter release: The release to push.
 	static func pushRelease(_ release: ReleaseResource) -> SonarrRequest<[ReleaseResource]> {
-		SonarrRequest(method: .post, path: "api/v3/release/push", body: { JSONBody(release) })
+		SonarrRequest(method: .post, path: "api/v3/release/push", body: { JSONBody(release, encoder: sonarrEncoder) })
 	}
 }
 
@@ -53,6 +53,6 @@ public extension SonarrRequest where SonarrResponse == EmptyResponse {
 	///
 	/// - Parameter release: The release to grab, as returned by `releases`.
 	static func grabRelease(_ release: ReleaseResource) -> SonarrRequest<EmptyResponse> {
-		SonarrRequest(method: .post, path: "api/v3/release", body: { JSONBody(release) })
+		SonarrRequest(method: .post, path: "api/v3/release", body: { JSONBody(release, encoder: sonarrEncoder) })
 	}
 }

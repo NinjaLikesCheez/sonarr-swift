@@ -54,7 +54,7 @@ public extension SonarrRequest where SonarrResponse == NotificationResource {
 			method: .post,
 			path: "api/v3/notification",
 			queryItems: [URLQueryItem(name: "forceSave", value: String(forceSave))],
-			body: { JSONBody(notification) }
+			body: { JSONBody(notification, encoder: sonarrEncoder) }
 		)
 	}
 
@@ -77,7 +77,7 @@ public extension SonarrRequest where SonarrResponse == NotificationResource {
 			method: .put,
 			path: "api/v3/notification/\(id)",
 			queryItems: [URLQueryItem(name: "forceSave", value: String(forceSave))],
-			body: { JSONBody(notification) }
+			body: { JSONBody(notification, encoder: sonarrEncoder) }
 		)
 	}
 }
@@ -107,7 +107,7 @@ public extension SonarrRequest where SonarrResponse == EmptyResponse {
 			method: .post,
 			path: "api/v3/notification/test",
 			queryItems: [URLQueryItem(name: "forceTest", value: String(forceTest))],
-			body: { JSONBody(notification) }
+			body: { JSONBody(notification, encoder: sonarrEncoder) }
 		)
 	}
 
@@ -132,7 +132,7 @@ public extension SonarrRequest where SonarrResponse == EmptyResponse {
 		SonarrRequest(
 			method: .post,
 			path: "api/v3/notification/action/\(name)",
-			body: { JSONBody(notification) }
+			body: { JSONBody(notification, encoder: sonarrEncoder) }
 		)
 	}
 }

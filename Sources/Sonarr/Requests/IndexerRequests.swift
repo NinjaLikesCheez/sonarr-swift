@@ -35,7 +35,7 @@ public extension SonarrRequest where SonarrResponse == [IndexerResource] {
 	///
 	/// - Parameter bulkResource: The identifiers and fields to update across the affected indexers.
 	static func updateIndexers(_ bulkResource: IndexerBulkResource) -> SonarrRequest<[IndexerResource]> {
-		SonarrRequest(method: .put, path: "api/v3/indexer/bulk", body: { JSONBody(bulkResource) })
+		SonarrRequest(method: .put, path: "api/v3/indexer/bulk", body: { JSONBody(bulkResource, encoder: sonarrEncoder) })
 	}
 }
 
@@ -68,7 +68,7 @@ public extension SonarrRequest where SonarrResponse == IndexerResource {
 			method: .post,
 			path: "api/v3/indexer",
 			queryItems: [URLQueryItem(name: "forceSave", value: String(forceSave))],
-			body: { JSONBody(indexer) }
+			body: { JSONBody(indexer, encoder: sonarrEncoder) }
 		)
 	}
 
@@ -91,7 +91,7 @@ public extension SonarrRequest where SonarrResponse == IndexerResource {
 			method: .put,
 			path: "api/v3/indexer/\(id)",
 			queryItems: [URLQueryItem(name: "forceSave", value: String(forceSave))],
-			body: { JSONBody(indexer) }
+			body: { JSONBody(indexer, encoder: sonarrEncoder) }
 		)
 	}
 }
@@ -112,7 +112,8 @@ public extension SonarrRequest where SonarrResponse == EmptyResponse {
 	///
 	/// - Parameter bulkResource: The identifiers of the indexers to delete.
 	static func deleteIndexers(_ bulkResource: IndexerBulkResource) -> SonarrRequest<EmptyResponse> {
-		SonarrRequest(method: .delete, path: "api/v3/indexer/bulk", body: { JSONBody(bulkResource) })
+		SonarrRequest(
+			method: .delete, path: "api/v3/indexer/bulk", body: { JSONBody(bulkResource, encoder: sonarrEncoder) })
 	}
 
 	/// Tests the connection for an indexer configuration without saving it.
@@ -130,7 +131,7 @@ public extension SonarrRequest where SonarrResponse == EmptyResponse {
 			method: .post,
 			path: "api/v3/indexer/test",
 			queryItems: [URLQueryItem(name: "forceTest", value: String(forceTest))],
-			body: { JSONBody(indexer) }
+			body: { JSONBody(indexer, encoder: sonarrEncoder) }
 		)
 	}
 
@@ -155,7 +156,7 @@ public extension SonarrRequest where SonarrResponse == EmptyResponse {
 		SonarrRequest(
 			method: .post,
 			path: "api/v3/indexer/action/\(name)",
-			body: { JSONBody(indexer) }
+			body: { JSONBody(indexer, encoder: sonarrEncoder) }
 		)
 	}
 }

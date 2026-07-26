@@ -31,7 +31,7 @@ public extension SonarrRequest where SonarrResponse == CustomFilterResource {
 	///
 	/// - Parameter customFilter: The custom filter to create.
 	static func addCustomFilter(_ customFilter: CustomFilterResource) -> SonarrRequest<CustomFilterResource> {
-		SonarrRequest(method: .post, path: "api/v3/customfilter", body: { JSONBody(customFilter) })
+		SonarrRequest(method: .post, path: "api/v3/customfilter", body: { JSONBody(customFilter, encoder: sonarrEncoder) })
 	}
 
 	/// Updates an existing custom filter.
@@ -47,7 +47,8 @@ public extension SonarrRequest where SonarrResponse == CustomFilterResource {
 		id: Int,
 		_ customFilter: CustomFilterResource
 	) -> SonarrRequest<CustomFilterResource> {
-		SonarrRequest(method: .put, path: "api/v3/customfilter/\(id)", body: { JSONBody(customFilter) })
+		SonarrRequest(
+			method: .put, path: "api/v3/customfilter/\(id)", body: { JSONBody(customFilter, encoder: sonarrEncoder) })
 	}
 }
 

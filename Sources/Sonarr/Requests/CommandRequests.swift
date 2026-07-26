@@ -10,7 +10,8 @@ public extension SonarrRequest where SonarrResponse == CommandResource {
 	///
 	/// - Parameter name: The command's type name, e.g. `RssSync` or `Backup`.
 	static func command(name: String) -> SonarrRequest<CommandResource> {
-		SonarrRequest(method: .post, path: "api/v3/command", body: { JSONBody(NamedCommandBody(name: name)) })
+		SonarrRequest(
+			method: .post, path: "api/v3/command", body: { JSONBody(NamedCommandBody(name: name), encoder: sonarrEncoder) })
 	}
 
 	/// Queues a refresh of one or more series, or of every series if none are given.
@@ -24,7 +25,7 @@ public extension SonarrRequest where SonarrResponse == CommandResource {
 		SonarrRequest(
 			method: .post,
 			path: "api/v3/command",
-			body: { JSONBody(RefreshSeriesCommandBody(seriesIds: seriesIds)) }
+			body: { JSONBody(RefreshSeriesCommandBody(seriesIds: seriesIds), encoder: sonarrEncoder) }
 		)
 	}
 
@@ -39,7 +40,7 @@ public extension SonarrRequest where SonarrResponse == CommandResource {
 		SonarrRequest(
 			method: .post,
 			path: "api/v3/command",
-			body: { JSONBody(RescanSeriesCommandBody(seriesId: seriesId)) }
+			body: { JSONBody(RescanSeriesCommandBody(seriesId: seriesId), encoder: sonarrEncoder) }
 		)
 	}
 
@@ -54,7 +55,7 @@ public extension SonarrRequest where SonarrResponse == CommandResource {
 		SonarrRequest(
 			method: .post,
 			path: "api/v3/command",
-			body: { JSONBody(SeriesSearchCommandBody(seriesId: seriesId)) }
+			body: { JSONBody(SeriesSearchCommandBody(seriesId: seriesId), encoder: sonarrEncoder) }
 		)
 	}
 
@@ -71,7 +72,9 @@ public extension SonarrRequest where SonarrResponse == CommandResource {
 		SonarrRequest(
 			method: .post,
 			path: "api/v3/command",
-			body: { JSONBody(SeasonSearchCommandBody(seriesId: seriesId, seasonNumber: seasonNumber)) }
+			body: {
+				JSONBody(SeasonSearchCommandBody(seriesId: seriesId, seasonNumber: seasonNumber), encoder: sonarrEncoder)
+			}
 		)
 	}
 
@@ -86,7 +89,7 @@ public extension SonarrRequest where SonarrResponse == CommandResource {
 		SonarrRequest(
 			method: .post,
 			path: "api/v3/command",
-			body: { JSONBody(EpisodeSearchCommandBody(episodeIds: episodeIds)) }
+			body: { JSONBody(EpisodeSearchCommandBody(episodeIds: episodeIds), encoder: sonarrEncoder) }
 		)
 	}
 
@@ -101,7 +104,7 @@ public extension SonarrRequest where SonarrResponse == CommandResource {
 		SonarrRequest(
 			method: .post,
 			path: "api/v3/command",
-			body: { JSONBody(MissingEpisodeSearchCommandBody(seriesId: seriesId)) }
+			body: { JSONBody(MissingEpisodeSearchCommandBody(seriesId: seriesId), encoder: sonarrEncoder) }
 		)
 	}
 
@@ -111,7 +114,9 @@ public extension SonarrRequest where SonarrResponse == CommandResource {
 	///
 	/// Result: the queued command, including its assigned identifier.
 	static var rssSync: SonarrRequest<CommandResource> {
-		SonarrRequest(method: .post, path: "api/v3/command", body: { JSONBody(NamedCommandBody(name: "RssSync")) })
+		SonarrRequest(
+			method: .post, path: "api/v3/command",
+			body: { JSONBody(NamedCommandBody(name: "RssSync"), encoder: sonarrEncoder) })
 	}
 
 	/// Queues a rename of a series' episode files that don't match its naming format.
@@ -127,7 +132,7 @@ public extension SonarrRequest where SonarrResponse == CommandResource {
 		SonarrRequest(
 			method: .post,
 			path: "api/v3/command",
-			body: { JSONBody(RenameFilesCommandBody(seriesId: seriesId, files: files)) }
+			body: { JSONBody(RenameFilesCommandBody(seriesId: seriesId, files: files), encoder: sonarrEncoder) }
 		)
 	}
 
@@ -137,7 +142,9 @@ public extension SonarrRequest where SonarrResponse == CommandResource {
 	///
 	/// Result: the queued command, including its assigned identifier.
 	static var backup: SonarrRequest<CommandResource> {
-		SonarrRequest(method: .post, path: "api/v3/command", body: { JSONBody(NamedCommandBody(name: "Backup")) })
+		SonarrRequest(
+			method: .post, path: "api/v3/command",
+			body: { JSONBody(NamedCommandBody(name: "Backup"), encoder: sonarrEncoder) })
 	}
 
 	/// Gets a single command by identifier.

@@ -25,7 +25,9 @@ public extension SonarrRequest where SonarrResponse == [QualityDefinitionResourc
 	static func updateQualityDefinitions(
 		_ qualityDefinitions: [QualityDefinitionResource]
 	) -> SonarrRequest<[QualityDefinitionResource]> {
-		SonarrRequest(method: .put, path: "api/v3/qualitydefinition/update", body: { JSONBody(qualityDefinitions) })
+		SonarrRequest(
+			method: .put, path: "api/v3/qualitydefinition/update",
+			body: { JSONBody(qualityDefinitions, encoder: sonarrEncoder) })
 	}
 }
 
@@ -54,7 +56,9 @@ public extension SonarrRequest where SonarrResponse == QualityDefinitionResource
 		id: Int,
 		_ qualityDefinition: QualityDefinitionResource
 	) -> SonarrRequest<QualityDefinitionResource> {
-		SonarrRequest(method: .put, path: "api/v3/qualitydefinition/\(id)", body: { JSONBody(qualityDefinition) })
+		SonarrRequest(
+			method: .put, path: "api/v3/qualitydefinition/\(id)",
+			body: { JSONBody(qualityDefinition, encoder: sonarrEncoder) })
 	}
 }
 

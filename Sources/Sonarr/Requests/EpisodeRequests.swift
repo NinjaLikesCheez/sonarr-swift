@@ -68,7 +68,7 @@ public extension SonarrRequest where SonarrResponse == EmptyResponse {
 			method: .put,
 			path: "api/v3/episode/monitor",
 			queryItems: [URLQueryItem(name: "includeImages", value: String(includeImages))],
-			body: { JSONBody(episodesMonitored) }
+			body: { JSONBody(episodesMonitored, encoder: sonarrEncoder) }
 		)
 	}
 }
@@ -95,6 +95,6 @@ public extension SonarrRequest where SonarrResponse == EpisodeResource {
 	///   - id: The unique identifier of the episode to update.
 	///   - episode: The new episode.
 	static func updateEpisode(id: Int, _ episode: EpisodeResource) -> SonarrRequest<EpisodeResource> {
-		SonarrRequest(method: .put, path: "api/v3/episode/\(id)", body: { JSONBody(episode) })
+		SonarrRequest(method: .put, path: "api/v3/episode/\(id)", body: { JSONBody(episode, encoder: sonarrEncoder) })
 	}
 }

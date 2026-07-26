@@ -34,7 +34,8 @@ public extension SonarrRequest where SonarrResponse == [DownloadClientResource] 
 	static func updateDownloadClients(_ bulkResource: DownloadClientBulkResource) -> SonarrRequest<
 		[DownloadClientResource]
 	> {
-		SonarrRequest(method: .put, path: "api/v3/downloadclient/bulk", body: { JSONBody(bulkResource) })
+		SonarrRequest(
+			method: .put, path: "api/v3/downloadclient/bulk", body: { JSONBody(bulkResource, encoder: sonarrEncoder) })
 	}
 }
 
@@ -67,7 +68,7 @@ public extension SonarrRequest where SonarrResponse == DownloadClientResource {
 			method: .post,
 			path: "api/v3/downloadclient",
 			queryItems: [URLQueryItem(name: "forceSave", value: String(forceSave))],
-			body: { JSONBody(downloadClient) }
+			body: { JSONBody(downloadClient, encoder: sonarrEncoder) }
 		)
 	}
 
@@ -90,7 +91,7 @@ public extension SonarrRequest where SonarrResponse == DownloadClientResource {
 			method: .put,
 			path: "api/v3/downloadclient/\(id)",
 			queryItems: [URLQueryItem(name: "forceSave", value: String(forceSave))],
-			body: { JSONBody(downloadClient) }
+			body: { JSONBody(downloadClient, encoder: sonarrEncoder) }
 		)
 	}
 }
@@ -111,7 +112,8 @@ public extension SonarrRequest where SonarrResponse == EmptyResponse {
 	///
 	/// - Parameter bulkResource: The identifiers of the download clients to delete.
 	static func deleteDownloadClients(_ bulkResource: DownloadClientBulkResource) -> SonarrRequest<EmptyResponse> {
-		SonarrRequest(method: .delete, path: "api/v3/downloadclient/bulk", body: { JSONBody(bulkResource) })
+		SonarrRequest(
+			method: .delete, path: "api/v3/downloadclient/bulk", body: { JSONBody(bulkResource, encoder: sonarrEncoder) })
 	}
 
 	/// Tests the connection for a download client configuration without saving it.
@@ -129,7 +131,7 @@ public extension SonarrRequest where SonarrResponse == EmptyResponse {
 			method: .post,
 			path: "api/v3/downloadclient/test",
 			queryItems: [URLQueryItem(name: "forceTest", value: String(forceTest))],
-			body: { JSONBody(downloadClient) }
+			body: { JSONBody(downloadClient, encoder: sonarrEncoder) }
 		)
 	}
 
@@ -154,7 +156,7 @@ public extension SonarrRequest where SonarrResponse == EmptyResponse {
 		SonarrRequest(
 			method: .post,
 			path: "api/v3/downloadclient/action/\(name)",
-			body: { JSONBody(downloadClient) }
+			body: { JSONBody(downloadClient, encoder: sonarrEncoder) }
 		)
 	}
 }

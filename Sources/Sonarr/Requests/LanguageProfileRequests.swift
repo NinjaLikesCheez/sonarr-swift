@@ -29,7 +29,8 @@ public extension SonarrRequest where SonarrResponse == LanguageProfileResource {
 	static func addLanguageProfile(
 		_ languageProfile: LanguageProfileResource
 	) -> SonarrRequest<LanguageProfileResource> {
-		SonarrRequest(method: .post, path: "api/v3/languageprofile", body: { JSONBody(languageProfile) })
+		SonarrRequest(
+			method: .post, path: "api/v3/languageprofile", body: { JSONBody(languageProfile, encoder: sonarrEncoder) })
 	}
 
 	/// Updates an existing language profile.
@@ -46,7 +47,8 @@ public extension SonarrRequest where SonarrResponse == LanguageProfileResource {
 		id: Int,
 		_ languageProfile: LanguageProfileResource
 	) -> SonarrRequest<LanguageProfileResource> {
-		SonarrRequest(method: .put, path: "api/v3/languageprofile/\(id)", body: { JSONBody(languageProfile) })
+		SonarrRequest(
+			method: .put, path: "api/v3/languageprofile/\(id)", body: { JSONBody(languageProfile, encoder: sonarrEncoder) })
 	}
 
 	/// Gets a single language profile.

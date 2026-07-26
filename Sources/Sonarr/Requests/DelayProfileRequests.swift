@@ -51,7 +51,7 @@ public extension SonarrRequest where SonarrResponse == DelayProfileResource {
 	///
 	/// - Parameter delayProfile: The delay profile to create.
 	static func addDelayProfile(_ delayProfile: DelayProfileResource) -> SonarrRequest<DelayProfileResource> {
-		SonarrRequest(method: .post, path: "api/v3/delayprofile", body: { JSONBody(delayProfile) })
+		SonarrRequest(method: .post, path: "api/v3/delayprofile", body: { JSONBody(delayProfile, encoder: sonarrEncoder) })
 	}
 
 	/// Updates an existing delay profile.
@@ -67,7 +67,8 @@ public extension SonarrRequest where SonarrResponse == DelayProfileResource {
 		id: Int,
 		_ delayProfile: DelayProfileResource
 	) -> SonarrRequest<DelayProfileResource> {
-		SonarrRequest(method: .put, path: "api/v3/delayprofile/\(id)", body: { JSONBody(delayProfile) })
+		SonarrRequest(
+			method: .put, path: "api/v3/delayprofile/\(id)", body: { JSONBody(delayProfile, encoder: sonarrEncoder) })
 	}
 }
 

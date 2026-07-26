@@ -58,6 +58,6 @@ public extension SonarrRequest where SonarrResponse == EmptyResponse {
 	///
 	/// - Parameter reprocessed: The manual import candidates, with corrected metadata, to import.
 	static func manualImport(_ reprocessed: [ManualImportReprocessResource]) -> SonarrRequest<EmptyResponse> {
-		SonarrRequest(method: .post, path: "api/v3/manualimport", body: { JSONBody(reprocessed) })
+		SonarrRequest(method: .post, path: "api/v3/manualimport", body: { JSONBody(reprocessed, encoder: sonarrEncoder) })
 	}
 }

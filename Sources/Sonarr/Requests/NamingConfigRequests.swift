@@ -39,7 +39,8 @@ public extension SonarrRequest where SonarrResponse == NamingConfigResource {
 		id: Int,
 		_ namingConfig: NamingConfigResource
 	) -> SonarrRequest<NamingConfigResource> {
-		SonarrRequest(method: .put, path: "api/v3/config/naming/\(id)", body: { JSONBody(namingConfig) })
+		SonarrRequest(
+			method: .put, path: "api/v3/config/naming/\(id)", body: { JSONBody(namingConfig, encoder: sonarrEncoder) })
 	}
 }
 

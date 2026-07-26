@@ -67,7 +67,7 @@ public extension SonarrRequest where SonarrResponse == EmptyResponse {
 		SonarrRequest(
 			method: .delete,
 			path: "api/v3/blocklist/bulk",
-			body: { JSONBody(BlocklistBulkResource(ids: ids)) }
+			body: { JSONBody(BlocklistBulkResource(ids: ids), encoder: sonarrEncoder) }
 		)
 	}
 }

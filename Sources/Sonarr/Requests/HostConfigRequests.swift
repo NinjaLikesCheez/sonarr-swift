@@ -42,7 +42,7 @@ public extension SonarrRequest where SonarrResponse == HostConfigResource {
 		SonarrRequest(
 			method: .put,
 			path: "api/v3/config/host/\(id)",
-			body: { JSONBody(hostConfig) }
+			body: { JSONBody(hostConfig, encoder: sonarrEncoder) }
 		)
 	}
 }

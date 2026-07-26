@@ -32,7 +32,8 @@ public extension SonarrRequest where SonarrResponse == [ImportListResource] {
 	///
 	/// - Parameter bulkResource: The identifiers and fields to update across the affected import lists.
 	static func updateImportLists(_ bulkResource: ImportListBulkResource) -> SonarrRequest<[ImportListResource]> {
-		SonarrRequest(method: .put, path: "api/v3/importlist/bulk", body: { JSONBody(bulkResource) })
+		SonarrRequest(
+			method: .put, path: "api/v3/importlist/bulk", body: { JSONBody(bulkResource, encoder: sonarrEncoder) })
 	}
 }
 
@@ -65,7 +66,7 @@ public extension SonarrRequest where SonarrResponse == ImportListResource {
 			method: .post,
 			path: "api/v3/importlist",
 			queryItems: [URLQueryItem(name: "forceSave", value: String(forceSave))],
-			body: { JSONBody(importList) }
+			body: { JSONBody(importList, encoder: sonarrEncoder) }
 		)
 	}
 
@@ -88,7 +89,7 @@ public extension SonarrRequest where SonarrResponse == ImportListResource {
 			method: .put,
 			path: "api/v3/importlist/\(id)",
 			queryItems: [URLQueryItem(name: "forceSave", value: String(forceSave))],
-			body: { JSONBody(importList) }
+			body: { JSONBody(importList, encoder: sonarrEncoder) }
 		)
 	}
 }
@@ -109,7 +110,8 @@ public extension SonarrRequest where SonarrResponse == EmptyResponse {
 	///
 	/// - Parameter bulkResource: The identifiers of the import lists to delete.
 	static func deleteImportLists(_ bulkResource: ImportListBulkResource) -> SonarrRequest<EmptyResponse> {
-		SonarrRequest(method: .delete, path: "api/v3/importlist/bulk", body: { JSONBody(bulkResource) })
+		SonarrRequest(
+			method: .delete, path: "api/v3/importlist/bulk", body: { JSONBody(bulkResource, encoder: sonarrEncoder) })
 	}
 
 	/// Tests the connection for an import list configuration without saving it.
@@ -127,7 +129,7 @@ public extension SonarrRequest where SonarrResponse == EmptyResponse {
 			method: .post,
 			path: "api/v3/importlist/test",
 			queryItems: [URLQueryItem(name: "forceTest", value: String(forceTest))],
-			body: { JSONBody(importList) }
+			body: { JSONBody(importList, encoder: sonarrEncoder) }
 		)
 	}
 
@@ -152,7 +154,7 @@ public extension SonarrRequest where SonarrResponse == EmptyResponse {
 		SonarrRequest(
 			method: .post,
 			path: "api/v3/importlist/action/\(name)",
-			body: { JSONBody(importList) }
+			body: { JSONBody(importList, encoder: sonarrEncoder) }
 		)
 	}
 }

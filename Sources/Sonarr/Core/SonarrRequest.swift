@@ -5,6 +5,10 @@ import Foundation
 	import FoundationNetworking
 #endif
 
+/// The shared encoder every `JSONBody` request body should be built with, so `Date` fields are sent as
+/// ISO 8601 strings rather than the default `JSONEncoder`'s raw epoch-seconds numbers.
+let sonarrEncoder = Sonarr.makeEncoder()
+
 public struct SonarrRequest<SonarrResponse: Decodable>: Request {
 	public typealias Response = SonarrResponse
 	public var method: HTTPMethod

@@ -78,7 +78,8 @@ public extension SonarrRequest where SonarrResponse == ImportListExclusionResour
 	static func addImportListExclusion(
 		_ exclusion: ImportListExclusionResource
 	) -> SonarrRequest<ImportListExclusionResource> {
-		SonarrRequest(method: .post, path: "api/v3/importlistexclusion", body: { JSONBody(exclusion) })
+		SonarrRequest(
+			method: .post, path: "api/v3/importlistexclusion", body: { JSONBody(exclusion, encoder: sonarrEncoder) })
 	}
 
 	/// Updates an existing import list exclusion.
@@ -94,7 +95,8 @@ public extension SonarrRequest where SonarrResponse == ImportListExclusionResour
 		id: Int,
 		_ exclusion: ImportListExclusionResource
 	) -> SonarrRequest<ImportListExclusionResource> {
-		SonarrRequest(method: .put, path: "api/v3/importlistexclusion/\(id)", body: { JSONBody(exclusion) })
+		SonarrRequest(
+			method: .put, path: "api/v3/importlistexclusion/\(id)", body: { JSONBody(exclusion, encoder: sonarrEncoder) })
 	}
 }
 
@@ -116,6 +118,8 @@ public extension SonarrRequest where SonarrResponse == EmptyResponse {
 	static func deleteImportListExclusions(
 		_ bulkResource: ImportListExclusionBulkResource
 	) -> SonarrRequest<EmptyResponse> {
-		SonarrRequest(method: .delete, path: "api/v3/importlistexclusion/bulk", body: { JSONBody(bulkResource) })
+		SonarrRequest(
+			method: .delete, path: "api/v3/importlistexclusion/bulk", body: { JSONBody(bulkResource, encoder: sonarrEncoder) }
+		)
 	}
 }

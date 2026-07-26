@@ -23,7 +23,8 @@ public extension SonarrRequest where SonarrResponse == RemotePathMappingResource
 	static func addRemotePathMapping(
 		_ remotePathMapping: RemotePathMappingResource
 	) -> SonarrRequest<RemotePathMappingResource> {
-		SonarrRequest(method: .post, path: "api/v3/remotepathmapping", body: { JSONBody(remotePathMapping) })
+		SonarrRequest(
+			method: .post, path: "api/v3/remotepathmapping", body: { JSONBody(remotePathMapping, encoder: sonarrEncoder) })
 	}
 
 	/// Updates an existing remote path mapping.
@@ -39,7 +40,9 @@ public extension SonarrRequest where SonarrResponse == RemotePathMappingResource
 		id: Int,
 		_ remotePathMapping: RemotePathMappingResource
 	) -> SonarrRequest<RemotePathMappingResource> {
-		SonarrRequest(method: .put, path: "api/v3/remotepathmapping/\(id)", body: { JSONBody(remotePathMapping) })
+		SonarrRequest(
+			method: .put, path: "api/v3/remotepathmapping/\(id)",
+			body: { JSONBody(remotePathMapping, encoder: sonarrEncoder) })
 	}
 
 	/// Gets a single remote path mapping.

@@ -42,7 +42,7 @@ public extension SonarrRequest where SonarrResponse == IndexerConfigResource {
 		SonarrRequest(
 			method: .put,
 			path: "api/v3/config/indexer/\(id)",
-			body: { JSONBody(indexerConfig) }
+			body: { JSONBody(indexerConfig, encoder: sonarrEncoder) }
 		)
 	}
 }

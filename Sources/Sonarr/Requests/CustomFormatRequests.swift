@@ -29,7 +29,8 @@ public extension SonarrRequest where SonarrResponse == [CustomFormatResource] {
 			path: "api/v3/customformat/bulk",
 			body: {
 				JSONBody(
-					CustomFormatBulkResource(ids: ids, includeCustomFormatWhenRenaming: includeCustomFormatWhenRenaming)
+					CustomFormatBulkResource(ids: ids, includeCustomFormatWhenRenaming: includeCustomFormatWhenRenaming),
+					encoder: sonarrEncoder
 				)
 			}
 		)
@@ -56,7 +57,7 @@ public extension SonarrRequest where SonarrResponse == CustomFormatResource {
 	///
 	/// - Parameter customFormat: The custom format to create.
 	static func addCustomFormat(_ customFormat: CustomFormatResource) -> SonarrRequest<CustomFormatResource> {
-		SonarrRequest(method: .post, path: "api/v3/customformat", body: { JSONBody(customFormat) })
+		SonarrRequest(method: .post, path: "api/v3/customformat", body: { JSONBody(customFormat, encoder: sonarrEncoder) })
 	}
 
 	/// Updates an existing custom format.
@@ -72,7 +73,8 @@ public extension SonarrRequest where SonarrResponse == CustomFormatResource {
 		id: Int,
 		_ customFormat: CustomFormatResource
 	) -> SonarrRequest<CustomFormatResource> {
-		SonarrRequest(method: .put, path: "api/v3/customformat/\(id)", body: { JSONBody(customFormat) })
+		SonarrRequest(
+			method: .put, path: "api/v3/customformat/\(id)", body: { JSONBody(customFormat, encoder: sonarrEncoder) })
 	}
 }
 
@@ -95,7 +97,7 @@ public extension SonarrRequest where SonarrResponse == EmptyResponse {
 		SonarrRequest(
 			method: .delete,
 			path: "api/v3/customformat/bulk",
-			body: { JSONBody(CustomFormatBulkResource(ids: ids)) }
+			body: { JSONBody(CustomFormatBulkResource(ids: ids), encoder: sonarrEncoder) }
 		)
 	}
 }
