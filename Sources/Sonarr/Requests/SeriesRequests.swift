@@ -80,7 +80,7 @@ public extension SonarrRequest where SonarrResponse == SeriesResource {
 	}
 }
 
-public extension SonarrRequest where SonarrResponse == String {
+public extension SonarrRequest where SonarrResponse == SeriesFolderResource {
 	/// Gets the folder name Sonarr would use for a series.
 	///
 	/// Endpoint: `GET /api/v3/series/{id}/folder`
@@ -88,7 +88,7 @@ public extension SonarrRequest where SonarrResponse == String {
 	/// Result: the series' folder name.
 	///
 	/// - Parameter id: The unique identifier of the series.
-	static func seriesFolder(id: Int) -> SonarrRequest<String> {
+	static func seriesFolder(id: Int) -> SonarrRequest<SeriesFolderResource> {
 		SonarrRequest(method: .get, path: "api/v3/series/\(id)/folder")
 	}
 }

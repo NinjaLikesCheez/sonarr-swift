@@ -43,7 +43,7 @@ struct SeriesRequestsTests {
 		#expect(fetched.id == id)
 
 		let folder = try await client.request(.seriesFolder(id: id))
-		#expect(!folder.isEmpty)
+		#expect(!folder.folder.isEmpty)
 
 		let updated = try await client.request(
 			.updateSeries(

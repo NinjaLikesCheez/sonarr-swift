@@ -272,11 +272,11 @@ struct SeriesRequestsTests {
 	}
 
 	@Test func seriesFolderDecoding() throws {
-		let json = Data(#""Some Show""#.utf8)
+		let json = Data(#"{"folder": "Some Show"}"#.utf8)
 
-		let folder = try client.decoder.decode(String.self, from: json)
+		let folder = try client.decoder.decode(SeriesFolderResource.self, from: json)
 
-		#expect(folder == "Some Show")
+		#expect(folder.folder == "Some Show")
 	}
 
 	@Test func editSeriesRequestConstruction() throws {
