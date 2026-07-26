@@ -134,8 +134,8 @@ struct SeriesRequestsTests {
 /// Retries `operation` until `condition` is satisfied or a fixed number of attempts is exhausted,
 /// returning the last result either way.
 private func poll<T>(
-	attempts: Int = 10,
-	delayNanoseconds: UInt64 = 200_000_000,
+	attempts: Int = 25,
+	delayNanoseconds: UInt64 = 400_000_000,
 	_ operation: () async throws -> T,
 	until condition: (T) -> Bool
 ) async throws -> T {

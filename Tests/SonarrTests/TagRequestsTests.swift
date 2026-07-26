@@ -83,4 +83,70 @@ struct TagRequestsTests {
 		#expect(tags.count == 1)
 		#expect(tags.first?.label == "anime")
 	}
+
+	@Test func tagDetailsRequestConstruction() {
+		let request = SonarrRequest.tagDetails
+
+		#expect(request.method == .get)
+		#expect(request.path == "api/v3/tag/detail")
+	}
+
+	@Test func tagDetailsByIdRequestConstruction() {
+		let request = SonarrRequest.tagDetails(id: 1)
+
+		#expect(request.method == .get)
+		#expect(request.path == "api/v3/tag/detail/1")
+	}
+
+	@Test func tagDetailsResourceDecoding() throws {
+		let json = Data(
+			#"""
+			{
+				"id": 1,
+				"label": "anime",
+				"delayProfileIds": [1],
+				"importListIds": [],
+				"notificationIds": [2],
+				"restrictionIds": [],
+				"indexerIds": [3],
+				"downloadClientIds": [],
+				"autoTagIds": [4],
+				"seriesIds": [5, 6]
+			}
+			"""#.utf8
+		)
+
+		let details = try client.decoder.decode(TagDetailsResource.self, from: json)
+
+		#expect(details.id == 1)
+		#expect(details.label == "anime")
+		#expect(details.delayProfileIds == [1])
+		#expect(details.importListIds == [])
+		#expect(details.notificationIds == [2])
+		#expect(details.restrictionIds == [])
+		#expect(details.indexerIds == [3])
+		#expect(details.downloadClientIds == [])
+		#expect(details.autoTagIds == [4])
+		#expect(details.seriesIds == [5, 6])
+	}
+
+	@Test func tagDetailsResourceDecodingWithNullableFieldsMissing() throws {
+		let json = Data(#"{"id": 2}"#.utf8)
+
+		let details = try client.decoder.decode(TagDetailsResource.self, from: json)
+
+		#expect(details.id == 2)
+		#expect(details.label == nil)
+		#expect(details.delayProfileIds == nil)
+		#expect(details.seriesIds == nil)
+	}
+
+	@Test func tagDetailsResourceListDecoding() throws {
+		let json = Data(#"[{"id": 1, "label": "anime"}]"#.utf8)
+
+		let details = try client.decoder.decode([TagDetailsResource].self, from: json)
+
+		#expect(details.count == 1)
+		#expect(details.first?.label == "anime")
+	}
 }
