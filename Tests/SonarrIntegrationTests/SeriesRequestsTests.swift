@@ -70,6 +70,13 @@ struct SeriesRequestsTests {
 	}
 
 	@Test
+	func test_importSeries_empty() async throws {
+		let imported = try await client.request(.importSeries([]))
+
+		#expect(imported.isEmpty)
+	}
+
+	@Test
 	func test_editSeries_deleteSeriesInBulk() async throws {
 		let qualityProfiles = try await client.request(.qualityProfiles)
 		let qualityProfile = try #require(qualityProfiles.first)
