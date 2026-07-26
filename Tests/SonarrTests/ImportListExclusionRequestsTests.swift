@@ -65,8 +65,12 @@ struct ImportListExclusionRequestsTests {
 		#expect(request.path == "api/v3/importlistexclusion")
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(ImportListExclusionResource.self, from: try body.encode())
-		#expect(decoded == sampleExclusion)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["id"] as? Int == 1)
+		#expect(json["tvdbId"] as? Int == 12345)
+		#expect(json["title"] as? String == "Some Show")
 	}
 
 	@Test func updateImportListExclusionRequestConstruction() throws {
@@ -76,8 +80,12 @@ struct ImportListExclusionRequestsTests {
 		#expect(request.path == "api/v3/importlistexclusion/1")
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(ImportListExclusionResource.self, from: try body.encode())
-		#expect(decoded == sampleExclusion)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["id"] as? Int == 1)
+		#expect(json["tvdbId"] as? Int == 12345)
+		#expect(json["title"] as? String == "Some Show")
 	}
 
 	@Test func deleteImportListExclusionRequestConstruction() {

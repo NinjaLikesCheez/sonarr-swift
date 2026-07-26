@@ -41,8 +41,14 @@ struct DownloadClientConfigRequestsTests {
 		#expect(request.path == "api/v3/config/downloadclient/1")
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(DownloadClientConfigResource.self, from: try body.encode())
-		#expect(decoded == sampleDownloadClientConfig)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["id"] as? Int == 1)
+		#expect(json["downloadClientWorkingFolders"] as? String == "_UNPACK_|_FAILED_")
+		#expect(json["enableCompletedDownloadHandling"] as? Bool == true)
+		#expect(json["autoRedownloadFailed"] as? Bool == true)
+		#expect(json["autoRedownloadFailedFromInteractiveSearch"] as? Bool == false)
 	}
 
 	@Test func downloadClientConfigResourceDecoding() throws {

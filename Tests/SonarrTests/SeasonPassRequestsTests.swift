@@ -34,8 +34,23 @@ struct SeasonPassRequestsTests {
 		#expect(request.path == "api/v3/seasonpass")
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(SeasonPassResource.self, from: try body.encode())
-		#expect(decoded == sampleSeasonPass)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		let series = try #require(json["series"] as? [[String: Any]])
+		#expect(series.count == 1)
+		#expect(series.first?["id"] as? Int == 1)
+		#expect(series.first?["monitored"] as? Bool == true)
+
+		let seasons = try #require(series.first?["seasons"] as? [[String: Any]])
+		#expect(seasons.count == 1)
+		#expect(seasons.first?["seasonNumber"] as? Int == 1)
+		#expect(seasons.first?["monitored"] as? Bool == true)
+
+		let monitoringOptions = try #require(json["monitoringOptions"] as? [String: Any])
+		#expect(monitoringOptions["ignoreEpisodesWithFiles"] as? Bool == false)
+		#expect(monitoringOptions["ignoreEpisodesWithoutFiles"] as? Bool == false)
+		#expect(monitoringOptions["monitor"] as? String == "all")
 	}
 
 	@Test func seasonPassResourceEncodingWithNilFields() throws {

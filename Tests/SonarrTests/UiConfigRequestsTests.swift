@@ -46,8 +46,19 @@ struct UiConfigRequestsTests {
 		#expect(request.path == "api/v3/config/ui/1")
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(UiConfigResource.self, from: try body.encode())
-		#expect(decoded == sampleUiConfig)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["id"] as? Int == 1)
+		#expect(json["firstDayOfWeek"] as? Int == 0)
+		#expect(json["calendarWeekColumnHeader"] as? String == "ddd M/D")
+		#expect(json["shortDateFormat"] as? String == "MMM D, YYYY")
+		#expect(json["longDateFormat"] as? String == "dddd, MMMM D, YYYY")
+		#expect(json["timeFormat"] as? String == "h(:mm)a")
+		#expect(json["showRelativeDates"] as? Bool == true)
+		#expect(json["enableColorImpairedMode"] as? Bool == false)
+		#expect(json["theme"] as? String == "auto")
+		#expect(json["uiLanguage"] as? Int == 1)
 	}
 
 	@Test func uiConfigResourceDecoding() throws {

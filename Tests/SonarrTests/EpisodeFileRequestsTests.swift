@@ -77,8 +77,41 @@ struct EpisodeFileRequestsTests {
 		#expect(request.path == "api/v3/episodefile/1")
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(EpisodeFileResource.self, from: try body.encode())
-		#expect(decoded == sampleEpisodeFile)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["id"] as? Int == 1)
+		#expect(json["seriesId"] as? Int == 5)
+		#expect(json["seasonNumber"] as? Int == 1)
+		#expect(json["relativePath"] as? String == "Season 01/Some.Show.S01E01.mkv")
+		#expect(json["path"] as? String == "/tv/Some Show/Season 01/Some.Show.S01E01.mkv")
+		#expect(json["size"] as? Int == 123_456)
+		#expect(json["dateAdded"] as? String == "2024-01-01T12:00:00Z")
+		#expect(json["sceneName"] as? String == "Some.Show.S01E01.WEBDL-1080p")
+		#expect(json["releaseGroup"] as? String == "GROUP")
+
+		let languages = try #require(json["languages"] as? [[String: Any]])
+		#expect(languages.count == 1)
+		#expect(languages.first?["id"] as? Int == 1)
+		#expect(languages.first?["name"] as? String == "English")
+
+		let quality = try #require(json["quality"] as? [String: Any])
+		let qualityDetail = try #require(quality["quality"] as? [String: Any])
+		#expect(qualityDetail["id"] as? Int == 3)
+		#expect(qualityDetail["name"] as? String == "WEBDL-1080p")
+		#expect(qualityDetail["source"] as? String == "web")
+		#expect(qualityDetail["resolution"] as? Int == 1080)
+		let revision = try #require(quality["revision"] as? [String: Any])
+		#expect(revision["version"] as? Int == 1)
+		#expect(revision["real"] as? Int == 0)
+		#expect(revision["isRepack"] as? Bool == false)
+
+		#expect(json["customFormats"] == nil)
+		#expect(json["customFormatScore"] as? Int == 0)
+		#expect(json["indexerFlags"] as? Int == 0)
+		#expect(json["releaseType"] as? String == "singleEpisode")
+		#expect(json["mediaInfo"] == nil)
+		#expect(json["qualityCutoffNotMet"] as? Bool == false)
 	}
 
 	@Test func deleteEpisodeFileRequestConstruction() {
@@ -96,9 +129,11 @@ struct EpisodeFileRequestsTests {
 		#expect(request.path == "api/v3/episodefile/editor")
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(EpisodeFileListResourceFixture.self, from: try body.encode())
-		#expect(decoded.episodeFileIds == [1, 2, 3])
-		#expect(decoded.releaseGroup == "GROUP")
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["episodeFileIds"] as? [Int] == [1, 2, 3])
+		#expect(json["releaseGroup"] as? String == "GROUP")
 	}
 
 	@Test func deleteEpisodeFilesRequestConstruction() throws {
@@ -109,8 +144,10 @@ struct EpisodeFileRequestsTests {
 		#expect(request.path == "api/v3/episodefile/bulk")
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(EpisodeFileListResourceFixture.self, from: try body.encode())
-		#expect(decoded.episodeFileIds == [1, 2, 3])
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["episodeFileIds"] as? [Int] == [1, 2, 3])
 	}
 
 	@Test func updateEpisodeFilesRequestConstruction() throws {
@@ -120,8 +157,17 @@ struct EpisodeFileRequestsTests {
 		#expect(request.path == "api/v3/episodefile/bulk")
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode([EpisodeFileResource].self, from: try body.encode())
-		#expect(decoded == [sampleEpisodeFile])
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [[String: Any]])
+
+		#expect(json.count == 1)
+
+		let first = try #require(json.first)
+		#expect(first["id"] as? Int == 1)
+		#expect(first["seriesId"] as? Int == 5)
+		#expect(first["dateAdded"] as? String == "2024-01-01T12:00:00Z")
+		#expect(first["releaseType"] as? String == "singleEpisode")
+		#expect(first["qualityCutoffNotMet"] as? Bool == false)
 	}
 
 	@Test func episodeFileDecoding() throws {
@@ -211,11 +257,4 @@ struct EpisodeFileRequestsTests {
 		#expect(episodeFiles.first?.releaseType == .seasonPack)
 		#expect(episodeFiles.first?.qualityCutoffNotMet == true)
 	}
-}
-
-private struct EpisodeFileListResourceFixture: Decodable {
-	let episodeFileIds: [Int]?
-	let languages: [Language]?
-	let sceneName: String?
-	let releaseGroup: String?
 }

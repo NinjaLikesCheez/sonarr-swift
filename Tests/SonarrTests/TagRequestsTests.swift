@@ -35,8 +35,11 @@ struct TagRequestsTests {
 		#expect(request.path == "api/v3/tag")
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(TagResource.self, from: try body.encode())
-		#expect(decoded == sampleTag)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["id"] as? Int == 1)
+		#expect(json["label"] as? String == "anime")
 	}
 
 	@Test func updateTagRequestConstruction() throws {
@@ -46,8 +49,11 @@ struct TagRequestsTests {
 		#expect(request.path == "api/v3/tag/1")
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(TagResource.self, from: try body.encode())
-		#expect(decoded == sampleTag)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["id"] as? Int == 1)
+		#expect(json["label"] as? String == "anime")
 	}
 
 	@Test func deleteTagRequestConstruction() {

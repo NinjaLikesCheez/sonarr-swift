@@ -99,8 +99,22 @@ struct EpisodeRequestsTests {
 		#expect(request.path == "api/v3/episode/1")
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(EpisodeResource.self, from: try body.encode())
-		#expect(decoded == sampleEpisode)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["id"] as? Int == 1)
+		#expect(json["seriesId"] as? Int == 5)
+		#expect(json["tvdbId"] as? Int == 100)
+		#expect(json["episodeFileId"] as? Int == 9)
+		#expect(json["seasonNumber"] as? Int == 1)
+		#expect(json["episodeNumber"] as? Int == 3)
+		#expect(json["title"] as? String == "Some Episode")
+		#expect(json["airDate"] as? String == "2024-01-01")
+		#expect(json["runtime"] as? Int == 30)
+		#expect(json["hasFile"] as? Bool == true)
+		#expect(json["monitored"] as? Bool == true)
+		#expect(json["unverifiedSceneNumbering"] as? Bool == false)
+		#expect(json["grabbed"] as? Bool == false)
 	}
 
 	@Test func updateEpisodesMonitoredRequestConstruction() throws {
@@ -115,9 +129,11 @@ struct EpisodeRequestsTests {
 		#expect(components?.queryItems == [URLQueryItem(name: "includeImages", value: "true")])
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(EpisodesMonitoredResourceFixture.self, from: try body.encode())
-		#expect(decoded.episodeIds == [1, 2, 3])
-		#expect(decoded.monitored == true)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["episodeIds"] as? [Int] == [1, 2, 3])
+		#expect(json["monitored"] as? Bool == true)
 	}
 
 	@Test func updateEpisodesMonitoredRequestConstructionDefaultsIncludeImagesFalse() {
@@ -185,9 +201,4 @@ struct EpisodeRequestsTests {
 		#expect(episodes.count == 1)
 		#expect(episodes.first?.id == 1)
 	}
-}
-
-private struct EpisodesMonitoredResourceFixture: Decodable {
-	let episodeIds: [Int]?
-	let monitored: Bool
 }

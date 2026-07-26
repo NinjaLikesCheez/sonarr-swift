@@ -40,8 +40,13 @@ struct RemotePathMappingRequestsTests {
 		#expect(request.path == "api/v3/remotepathmapping")
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(RemotePathMappingResource.self, from: try body.encode())
-		#expect(decoded == sampleRemotePathMapping)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["id"] as? Int == 1)
+		#expect(json["host"] as? String == "download-client")
+		#expect(json["remotePath"] as? String == "/remote/downloads/")
+		#expect(json["localPath"] as? String == "/local/downloads/")
 	}
 
 	@Test func updateRemotePathMappingRequestConstruction() throws {
@@ -51,8 +56,13 @@ struct RemotePathMappingRequestsTests {
 		#expect(request.path == "api/v3/remotepathmapping/1")
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(RemotePathMappingResource.self, from: try body.encode())
-		#expect(decoded == sampleRemotePathMapping)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["id"] as? Int == 1)
+		#expect(json["host"] as? String == "download-client")
+		#expect(json["remotePath"] as? String == "/remote/downloads/")
+		#expect(json["localPath"] as? String == "/local/downloads/")
 	}
 
 	@Test func deleteRemotePathMappingRequestConstruction() {

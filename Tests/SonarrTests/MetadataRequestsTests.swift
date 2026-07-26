@@ -48,8 +48,17 @@ struct MetadataRequestsTests {
 		#expect(components?.queryItems == [URLQueryItem(name: "forceSave", value: "true")])
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(MetadataResource.self, from: try body.encode())
-		#expect(decoded == sampleMetadataConsumer)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["id"] as? Int == 1)
+		#expect(json["name"] as? String == "Kodi")
+		#expect(json["implementationName"] as? String == "Kodi (XBMC) / Emby")
+		#expect(json["implementation"] as? String == "XbmcMetadata")
+		#expect(json["configContract"] as? String == "XbmcMetadataSettings")
+		#expect(json["infoLink"] as? String == "https://wiki.servarr.com/sonarr/settings#metadata")
+		#expect(json["tags"] as? [Int] == [])
+		#expect(json["enable"] as? Bool == true)
 	}
 
 	@Test func addMetadataConsumerRequestConstructionDefaultsForceSaveFalse() {
@@ -71,8 +80,17 @@ struct MetadataRequestsTests {
 		#expect(components?.queryItems == [URLQueryItem(name: "forceSave", value: "true")])
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(MetadataResource.self, from: try body.encode())
-		#expect(decoded == sampleMetadataConsumer)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["id"] as? Int == 1)
+		#expect(json["name"] as? String == "Kodi")
+		#expect(json["implementationName"] as? String == "Kodi (XBMC) / Emby")
+		#expect(json["implementation"] as? String == "XbmcMetadata")
+		#expect(json["configContract"] as? String == "XbmcMetadataSettings")
+		#expect(json["infoLink"] as? String == "https://wiki.servarr.com/sonarr/settings#metadata")
+		#expect(json["tags"] as? [Int] == [])
+		#expect(json["enable"] as? Bool == true)
 	}
 
 	@Test func deleteMetadataConsumerRequestConstruction() {
@@ -100,8 +118,17 @@ struct MetadataRequestsTests {
 		#expect(components?.queryItems == [URLQueryItem(name: "forceTest", value: "true")])
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(MetadataResource.self, from: try body.encode())
-		#expect(decoded == sampleMetadataConsumer)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["id"] as? Int == 1)
+		#expect(json["name"] as? String == "Kodi")
+		#expect(json["implementationName"] as? String == "Kodi (XBMC) / Emby")
+		#expect(json["implementation"] as? String == "XbmcMetadata")
+		#expect(json["configContract"] as? String == "XbmcMetadataSettings")
+		#expect(json["infoLink"] as? String == "https://wiki.servarr.com/sonarr/settings#metadata")
+		#expect(json["tags"] as? [Int] == [])
+		#expect(json["enable"] as? Bool == true)
 	}
 
 	@Test func testAllMetadataConsumersRequestConstruction() {
@@ -118,8 +145,17 @@ struct MetadataRequestsTests {
 		#expect(request.path == "api/v3/metadata/action/checkForUpdates")
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(MetadataResource.self, from: try body.encode())
-		#expect(decoded == sampleMetadataConsumer)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["id"] as? Int == 1)
+		#expect(json["name"] as? String == "Kodi")
+		#expect(json["implementationName"] as? String == "Kodi (XBMC) / Emby")
+		#expect(json["implementation"] as? String == "XbmcMetadata")
+		#expect(json["configContract"] as? String == "XbmcMetadataSettings")
+		#expect(json["infoLink"] as? String == "https://wiki.servarr.com/sonarr/settings#metadata")
+		#expect(json["tags"] as? [Int] == [])
+		#expect(json["enable"] as? Bool == true)
 	}
 
 	@Test func metadataResourceDecoding() throws {

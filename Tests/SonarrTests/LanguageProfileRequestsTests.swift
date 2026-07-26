@@ -45,8 +45,20 @@ struct LanguageProfileRequestsTests {
 		#expect(request.path == "api/v3/languageprofile")
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(LanguageProfileResource.self, from: try body.encode())
-		#expect(decoded == sampleLanguageProfile)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["id"] as? Int == 1)
+		#expect(json["name"] as? String == "English")
+		#expect(json["upgradeAllowed"] as? Bool == true)
+		#expect((json["cutoff"] as? [String: Any])?["id"] as? Int == 1)
+		#expect((json["cutoff"] as? [String: Any])?["name"] as? String == "English")
+		let languages = try #require(json["languages"] as? [[String: Any]])
+		#expect(languages.count == 1)
+		#expect(languages.first?["id"] as? Int == 1)
+		#expect(languages.first?["allowed"] as? Bool == true)
+		#expect((languages.first?["language"] as? [String: Any])?["id"] as? Int == 1)
+		#expect((languages.first?["language"] as? [String: Any])?["name"] as? String == "English")
 	}
 
 	@available(*, deprecated)
@@ -57,8 +69,20 @@ struct LanguageProfileRequestsTests {
 		#expect(request.path == "api/v3/languageprofile/1")
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(LanguageProfileResource.self, from: try body.encode())
-		#expect(decoded == sampleLanguageProfile)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["id"] as? Int == 1)
+		#expect(json["name"] as? String == "English")
+		#expect(json["upgradeAllowed"] as? Bool == true)
+		#expect((json["cutoff"] as? [String: Any])?["id"] as? Int == 1)
+		#expect((json["cutoff"] as? [String: Any])?["name"] as? String == "English")
+		let languages = try #require(json["languages"] as? [[String: Any]])
+		#expect(languages.count == 1)
+		#expect(languages.first?["id"] as? Int == 1)
+		#expect(languages.first?["allowed"] as? Bool == true)
+		#expect((languages.first?["language"] as? [String: Any])?["id"] as? Int == 1)
+		#expect((languages.first?["language"] as? [String: Any])?["name"] as? String == "English")
 	}
 
 	@available(*, deprecated)

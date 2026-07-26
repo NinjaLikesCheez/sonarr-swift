@@ -58,8 +58,25 @@ struct ReleaseRequestsTests {
 		#expect(request.path == "api/v3/release")
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(ReleaseResource.self, from: try body.encode())
-		#expect(decoded == sampleRelease)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["guid"] as? String == "abc123")
+		#expect(json["indexerId"] as? Int == 1)
+		#expect(json["title"] as? String == "Some.Show.S01E01.WEBDL-1080p")
+		#expect(json["protocol"] as? String == "usenet")
+
+		let quality = try #require(json["quality"] as? [String: Any])
+		let qualityDetails = try #require(quality["quality"] as? [String: Any])
+		#expect(qualityDetails["id"] as? Int == 3)
+		#expect(qualityDetails["name"] as? String == "WEBDL-1080p")
+		#expect(qualityDetails["source"] as? String == "web")
+		#expect(qualityDetails["resolution"] as? Int == 1080)
+
+		let revision = try #require(quality["revision"] as? [String: Any])
+		#expect(revision["version"] as? Int == 1)
+		#expect(revision["real"] as? Int == 0)
+		#expect(revision["isRepack"] as? Bool == false)
 	}
 
 	@Test func pushReleaseRequestConstruction() throws {
@@ -69,8 +86,25 @@ struct ReleaseRequestsTests {
 		#expect(request.path == "api/v3/release/push")
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(ReleaseResource.self, from: try body.encode())
-		#expect(decoded == sampleRelease)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["guid"] as? String == "abc123")
+		#expect(json["indexerId"] as? Int == 1)
+		#expect(json["title"] as? String == "Some.Show.S01E01.WEBDL-1080p")
+		#expect(json["protocol"] as? String == "usenet")
+
+		let quality = try #require(json["quality"] as? [String: Any])
+		let qualityDetails = try #require(quality["quality"] as? [String: Any])
+		#expect(qualityDetails["id"] as? Int == 3)
+		#expect(qualityDetails["name"] as? String == "WEBDL-1080p")
+		#expect(qualityDetails["source"] as? String == "web")
+		#expect(qualityDetails["resolution"] as? Int == 1080)
+
+		let revision = try #require(quality["revision"] as? [String: Any])
+		#expect(revision["version"] as? Int == 1)
+		#expect(revision["real"] as? Int == 0)
+		#expect(revision["isRepack"] as? Bool == false)
 	}
 
 	@Test func releaseResourceDecoding() throws {

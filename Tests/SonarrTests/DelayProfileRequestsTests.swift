@@ -47,8 +47,20 @@ struct DelayProfileRequestsTests {
 		#expect(request.path == "api/v3/delayprofile")
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(DelayProfileResource.self, from: try body.encode())
-		#expect(decoded == sampleDelayProfile)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["id"] as? Int == 1)
+		#expect(json["enableUsenet"] as? Bool == true)
+		#expect(json["enableTorrent"] as? Bool == true)
+		#expect(json["preferredProtocol"] as? String == "usenet")
+		#expect(json["usenetDelay"] as? Int == 0)
+		#expect(json["torrentDelay"] as? Int == 0)
+		#expect(json["bypassIfHighestQuality"] as? Bool == false)
+		#expect(json["bypassIfAboveCustomFormatScore"] as? Bool == false)
+		#expect(json["minimumCustomFormatScore"] as? Int == 0)
+		#expect(json["order"] as? Int == 1)
+		#expect(json["tags"] as? [Int] == [])
 	}
 
 	@Test func updateDelayProfileRequestConstruction() throws {
@@ -58,8 +70,20 @@ struct DelayProfileRequestsTests {
 		#expect(request.path == "api/v3/delayprofile/1")
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(DelayProfileResource.self, from: try body.encode())
-		#expect(decoded == sampleDelayProfile)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["id"] as? Int == 1)
+		#expect(json["enableUsenet"] as? Bool == true)
+		#expect(json["enableTorrent"] as? Bool == true)
+		#expect(json["preferredProtocol"] as? String == "usenet")
+		#expect(json["usenetDelay"] as? Int == 0)
+		#expect(json["torrentDelay"] as? Int == 0)
+		#expect(json["bypassIfHighestQuality"] as? Bool == false)
+		#expect(json["bypassIfAboveCustomFormatScore"] as? Bool == false)
+		#expect(json["minimumCustomFormatScore"] as? Int == 0)
+		#expect(json["order"] as? Int == 1)
+		#expect(json["tags"] as? [Int] == [])
 	}
 
 	@Test func deleteDelayProfileRequestConstruction() {

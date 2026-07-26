@@ -56,8 +56,25 @@ struct IndexerRequestsTests {
 		#expect(components?.queryItems == [URLQueryItem(name: "forceSave", value: "true")])
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(IndexerResource.self, from: try body.encode())
-		#expect(decoded == sampleIndexer)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["id"] as? Int == 1)
+		#expect(json["name"] as? String == "NZBgeek")
+		#expect(json["implementationName"] as? String == "Newznab")
+		#expect(json["implementation"] as? String == "Newznab")
+		#expect(json["configContract"] as? String == "NewznabSettings")
+		#expect(json["infoLink"] as? String == "https://wiki.servarr.com/sonarr/settings#indexers")
+		#expect(json["tags"] as? [Int] == [])
+		#expect(json["enableRss"] as? Bool == true)
+		#expect(json["enableAutomaticSearch"] as? Bool == true)
+		#expect(json["enableInteractiveSearch"] as? Bool == true)
+		#expect(json["supportsRss"] as? Bool == true)
+		#expect(json["supportsSearch"] as? Bool == true)
+		#expect(json["protocol"] as? String == "usenet")
+		#expect(json["priority"] as? Int == 25)
+		#expect(json["seasonSearchMaximumSingleEpisodeAge"] as? Int == 0)
+		#expect(json["downloadClientId"] as? Int == 0)
 	}
 
 	@Test func addIndexerRequestConstructionDefaultsForceSaveFalse() {
@@ -81,8 +98,25 @@ struct IndexerRequestsTests {
 		#expect(components?.queryItems == [URLQueryItem(name: "forceSave", value: "true")])
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(IndexerResource.self, from: try body.encode())
-		#expect(decoded == sampleIndexer)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["id"] as? Int == 1)
+		#expect(json["name"] as? String == "NZBgeek")
+		#expect(json["implementationName"] as? String == "Newznab")
+		#expect(json["implementation"] as? String == "Newznab")
+		#expect(json["configContract"] as? String == "NewznabSettings")
+		#expect(json["infoLink"] as? String == "https://wiki.servarr.com/sonarr/settings#indexers")
+		#expect(json["tags"] as? [Int] == [])
+		#expect(json["enableRss"] as? Bool == true)
+		#expect(json["enableAutomaticSearch"] as? Bool == true)
+		#expect(json["enableInteractiveSearch"] as? Bool == true)
+		#expect(json["supportsRss"] as? Bool == true)
+		#expect(json["supportsSearch"] as? Bool == true)
+		#expect(json["protocol"] as? String == "usenet")
+		#expect(json["priority"] as? Int == 25)
+		#expect(json["seasonSearchMaximumSingleEpisodeAge"] as? Int == 0)
+		#expect(json["downloadClientId"] as? Int == 0)
 	}
 
 	@Test func deleteIndexerRequestConstruction() {
@@ -100,12 +134,14 @@ struct IndexerRequestsTests {
 		#expect(request.path == "api/v3/indexer/bulk")
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(IndexerBulkResourceFixture.self, from: try body.encode())
-		#expect(decoded.ids == [1, 2, 3])
-		#expect(decoded.tags == [4])
-		#expect(decoded.applyTags == "add")
-		#expect(decoded.enableRss == true)
-		#expect(decoded.priority == 25)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["ids"] as? [Int] == [1, 2, 3])
+		#expect(json["tags"] as? [Int] == [4])
+		#expect(json["applyTags"] as? String == "add")
+		#expect(json["enableRss"] as? Bool == true)
+		#expect(json["priority"] as? Int == 25)
 	}
 
 	@Test func deleteIndexersRequestConstruction() throws {
@@ -116,8 +152,10 @@ struct IndexerRequestsTests {
 		#expect(request.path == "api/v3/indexer/bulk")
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(IndexerBulkResourceFixture.self, from: try body.encode())
-		#expect(decoded.ids == [1, 2, 3])
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["ids"] as? [Int] == [1, 2, 3])
 	}
 
 	@Test func indexerSchemaRequestConstruction() {
@@ -140,8 +178,25 @@ struct IndexerRequestsTests {
 		#expect(components?.queryItems == [URLQueryItem(name: "forceTest", value: "true")])
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(IndexerResource.self, from: try body.encode())
-		#expect(decoded == sampleIndexer)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["id"] as? Int == 1)
+		#expect(json["name"] as? String == "NZBgeek")
+		#expect(json["implementationName"] as? String == "Newznab")
+		#expect(json["implementation"] as? String == "Newznab")
+		#expect(json["configContract"] as? String == "NewznabSettings")
+		#expect(json["infoLink"] as? String == "https://wiki.servarr.com/sonarr/settings#indexers")
+		#expect(json["tags"] as? [Int] == [])
+		#expect(json["enableRss"] as? Bool == true)
+		#expect(json["enableAutomaticSearch"] as? Bool == true)
+		#expect(json["enableInteractiveSearch"] as? Bool == true)
+		#expect(json["supportsRss"] as? Bool == true)
+		#expect(json["supportsSearch"] as? Bool == true)
+		#expect(json["protocol"] as? String == "usenet")
+		#expect(json["priority"] as? Int == 25)
+		#expect(json["seasonSearchMaximumSingleEpisodeAge"] as? Int == 0)
+		#expect(json["downloadClientId"] as? Int == 0)
 	}
 
 	@Test func testAllIndexersRequestConstruction() {
@@ -158,8 +213,25 @@ struct IndexerRequestsTests {
 		#expect(request.path == "api/v3/indexer/action/newznabCategories")
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(IndexerResource.self, from: try body.encode())
-		#expect(decoded == sampleIndexer)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["id"] as? Int == 1)
+		#expect(json["name"] as? String == "NZBgeek")
+		#expect(json["implementationName"] as? String == "Newznab")
+		#expect(json["implementation"] as? String == "Newznab")
+		#expect(json["configContract"] as? String == "NewznabSettings")
+		#expect(json["infoLink"] as? String == "https://wiki.servarr.com/sonarr/settings#indexers")
+		#expect(json["tags"] as? [Int] == [])
+		#expect(json["enableRss"] as? Bool == true)
+		#expect(json["enableAutomaticSearch"] as? Bool == true)
+		#expect(json["enableInteractiveSearch"] as? Bool == true)
+		#expect(json["supportsRss"] as? Bool == true)
+		#expect(json["supportsSearch"] as? Bool == true)
+		#expect(json["protocol"] as? String == "usenet")
+		#expect(json["priority"] as? Int == 25)
+		#expect(json["seasonSearchMaximumSingleEpisodeAge"] as? Int == 0)
+		#expect(json["downloadClientId"] as? Int == 0)
 	}
 
 	@Test func indexerResourceDecoding() throws {
@@ -260,12 +332,4 @@ struct IndexerRequestsTests {
 		#expect(indexers.first?.presets?.count == 1)
 		#expect(indexers.first?.presets?.first?.implementation == "Newznab")
 	}
-}
-
-private struct IndexerBulkResourceFixture: Decodable {
-	let ids: [Int]?
-	let tags: [Int]?
-	let applyTags: String?
-	let enableRss: Bool?
-	let priority: Int?
 }

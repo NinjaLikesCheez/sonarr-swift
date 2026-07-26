@@ -57,8 +57,16 @@ struct ManualImportRequestsTests {
 		#expect(request.path == "api/v3/manualimport")
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode([ManualImportReprocessResource].self, from: try body.encode())
-		#expect(decoded == reprocessed)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [[String: Any]])
+
+		#expect(json.count == 1)
+
+		let first = try #require(json.first)
+		#expect(first["id"] as? Int == 1)
+		#expect(first["path"] as? String == "/downloads/show/episode.mkv")
+		#expect(first["seriesId"] as? Int == 42)
+		#expect(first["episodeIds"] as? [Int] == [7])
 	}
 
 	@Test func manualImportResourceListDecoding() throws {

@@ -48,8 +48,27 @@ struct NamingConfigRequestsTests {
 		#expect(request.path == "api/v3/config/naming/1")
 
 		let body = try #require(try request.body())
-		let decoded = try client.decoder.decode(NamingConfigResource.self, from: try body.encode())
-		#expect(decoded == sampleNamingConfig)
+		let data = try body.encode()
+		let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+		#expect(json["id"] as? Int == 1)
+		#expect(json["renameEpisodes"] as? Bool == true)
+		#expect(json["replaceIllegalCharacters"] as? Bool == true)
+		#expect(json["colonReplacementFormat"] as? Int == 4)
+		#expect(json["customColonReplacementFormat"] as? String == "")
+		#expect(json["multiEpisodeStyle"] as? Int == 5)
+		#expect(
+			json["standardEpisodeFormat"] as? String
+				== "{Series Title} - S{season:00}E{episode:00} - {Episode Title}"
+		)
+		#expect(json["dailyEpisodeFormat"] as? String == "{Series Title} - {Air-Date} - {Episode Title}")
+		#expect(
+			json["animeEpisodeFormat"] as? String
+				== "{Series Title} - S{season:00}E{episode:00} - {Episode Title}"
+		)
+		#expect(json["seriesFolderFormat"] as? String == "{Series Title}")
+		#expect(json["seasonFolderFormat"] as? String == "Season {season}")
+		#expect(json["specialsFolderFormat"] as? String == "Specials")
 	}
 
 	@Test func namingConfigExamplesRequestConstructionWithDefaults() {
