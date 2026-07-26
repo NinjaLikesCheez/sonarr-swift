@@ -264,6 +264,21 @@ struct SeriesRequestsTests {
 		#expect(series.first?.title == "Some Show")
 	}
 
+	@Test func seriesFolderRequestConstruction() {
+		let request = SonarrRequest.seriesFolder(id: 1)
+
+		#expect(request.method == .get)
+		#expect(request.path == "api/v3/series/1/folder")
+	}
+
+	@Test func seriesFolderDecoding() throws {
+		let json = Data(#"{"folder": "Some Show"}"#.utf8)
+
+		let folder = try client.decoder.decode(SeriesFolderResource.self, from: json)
+
+		#expect(folder.folder == "Some Show")
+	}
+
 	@Test func editSeriesRequestConstruction() throws {
 		let seriesEditor = SeriesEditorResource(
 			seriesIds: [1, 2],
