@@ -18,7 +18,7 @@ struct TagRequestsTests {
 
 		let details = try await client.request(.tagDetails(id: id))
 		#expect(details.id == id)
-		#expect(details.seriesIds?.isEmpty != false)
+		#expect((details.seriesIds ?? []).isEmpty)
 
 		let allDetails = try await client.request(.tagDetails)
 		#expect(allDetails.contains(where: { $0.id == id }))
