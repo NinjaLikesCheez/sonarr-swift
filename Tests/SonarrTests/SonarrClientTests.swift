@@ -10,8 +10,11 @@ import Testing
 struct ValidationTests {
 	let client = Sonarr(baseURL: URL(string: "http://localhost:8989")!, apiKey: "test-api-key")
 
-	/// Runs the client's `validate` closure against a synthesized response and returns the thrown error, if any.
-	private func validate(statusCode: Int, body: String = "") -> Sonarr.Error? {
+	/// Runs the client's `validate` closure against a synthesized response and returns the typed response
+	/// error, if any. `Sonarr.Error` itself isn't `Equatable` (it wraps types from `swift-api-client` that
+	/// carry untyped `Error` payloads), but `SonarrResponseError` is - extracting it here lets call sites
+	/// compare directly instead of pattern-matching with `guard case`.
+	private func validate(statusCode: Int, body: String = "") -> SonarrResponseError? {
 		let response = HTTPURLResponse(
 			url: URL(string: "http://localhost:8989/api/v3/series")!,
 			statusCode: statusCode,
@@ -22,8 +25,11 @@ struct ValidationTests {
 		do {
 			try client.validate(Data(body.utf8), response)
 			return nil
+		} catch .response(let responseError) {
+			return responseError
 		} catch {
-			return error
+			Issue.record("Expected .response(_), got \(error)")
+			return nil
 		}
 	}
 
@@ -32,64 +38,84 @@ struct ValidationTests {
 		#expect(validate(statusCode: 201, body: #"{"id": 1}"#) == nil)
 	}
 
-	@Test func unauthorizedIsTyped() throws {
-		let error = try #require(validate(statusCode: 401))
-
-		guard case .response(.unauthorized) = error else {
-			Issue.record("Expected .response(.unauthorized), got \(error)")
-			return
-		}
+	@Test func unauthorizedIsTyped() {
+		#expect(validate(statusCode: 401) == .unauthorized)
 	}
 
-	@Test func notFoundCarriesMessage() throws {
-		let error = try #require(validate(statusCode: 404, body: #"{"message": "NotFound"}"#))
+	@Test func forbiddenCarriesMessage() {
+		#expect(validate(statusCode: 403, body: #"{"message": "Forbidden"}"#) == .forbidden(message: "Forbidden"))
+	}
 
-		guard case .response(.notFound(message: "NotFound")) = error else {
-			Issue.record("Expected .response(.notFound), got \(error)")
-			return
-		}
+	@Test func notFoundCarriesMessage() {
+		#expect(validate(statusCode: 404, body: #"{"message": "NotFound"}"#) == .notFound(message: "NotFound"))
 	}
 
 	@Test func badRequestCarriesValidationFailures() throws {
 		let body = #"[{"propertyName": "RootFolderPath", "errorMessage": "Path is invalid", "severity": "error"}]"#
-		let error = try #require(validate(statusCode: 400, body: body))
+		let expectedFailures = try JSONDecoder().decode([ValidationFailure].self, from: Data(body.utf8))
 
-		guard case let .response(.validation(failures)) = error else {
-			Issue.record("Expected .response(.validation), got \(error)")
-			return
-		}
-
-		#expect(failures.count == 1)
-		#expect(failures.first?.propertyName == "RootFolderPath")
-		#expect(failures.first?.errorMessage == "Path is invalid")
-		#expect(failures.first?.severity == "error")
+		#expect(validate(statusCode: 400, body: body) == .validation(expectedFailures))
 	}
 
-	@Test func badRequestWithoutFailuresFallsBackToStatusCode() throws {
-		let error = try #require(validate(statusCode: 400, body: #"{"message": "Bad Request"}"#))
-
-		guard case .response(.statusCode(400, message: "Bad Request")) = error else {
-			Issue.record("Expected .response(.statusCode(400)), got \(error)")
-			return
-		}
+	@Test func badRequestWithoutFailuresFallsBackToStatusCode() {
+		#expect(
+			validate(statusCode: 400, body: #"{"message": "Bad Request"}"#)
+				== .statusCode(400, message: "Bad Request")
+		)
 	}
 
-	@Test func serverErrorCarriesStatusCodeAndMessage() throws {
-		let error = try #require(validate(statusCode: 500, body: #"{"message": "Boom", "description": "It broke"}"#))
-
-		guard case .response(.statusCode(500, message: "Boom")) = error else {
-			Issue.record("Expected .response(.statusCode(500)), got \(error)")
-			return
-		}
+	@Test func serverErrorCarriesStatusCodeAndMessage() {
+		#expect(
+			validate(statusCode: 500, body: #"{"message": "Boom", "description": "It broke"}"#)
+				== .statusCode(500, message: "Boom")
+		)
 	}
 
-	@Test func nonJSONBodyIsSurfacedRaw() throws {
-		let error = try #require(validate(statusCode: 503, body: "Service Unavailable"))
+	@Test func nonJSONBodyIsSurfacedRaw() {
+		#expect(
+			validate(statusCode: 503, body: "Service Unavailable")
+				== .statusCode(503, message: "Service Unavailable")
+		)
+	}
 
-		guard case .response(.statusCode(503, message: "Service Unavailable")) = error else {
-			Issue.record("Expected .response(.statusCode(503)), got \(error)")
-			return
-		}
+	@Test func htmlBodyIsNotSurfacedAsAMessage() {
+		let html = "<html><body><h1>502 Bad Gateway</h1></body></html>"
+
+		#expect(validate(statusCode: 502, body: html) == .statusCode(502, message: nil))
+	}
+}
+
+@Suite("Error descriptions")
+struct ErrorDescriptionTests {
+	@Test func notFoundUsesServerMessageWhenPresent() {
+		let error = SonarrResponseError.notFound(message: "Series not found")
+		#expect(error.errorDescription == "Series not found")
+	}
+
+	@Test func notFoundFallsBackToAGenericMessageWhenTheServerDidntSendOne() {
+		let error = SonarrResponseError.notFound(message: nil)
+		#expect(error.errorDescription == "The requested resource does not exist.")
+	}
+
+	@Test func validationJoinsFieldLevelMessages() throws {
+		let body = #"""
+			[
+				{"propertyName": "RootFolderPath", "errorMessage": "Path is invalid", "severity": "error"},
+				{"propertyName": "QualityProfileId", "errorMessage": "must be set", "severity": "error"}
+			]
+			"""#
+		let failures = try JSONDecoder().decode([ValidationFailure].self, from: Data(body.utf8))
+		let error = SonarrResponseError.validation(failures)
+
+		#expect(error.errorDescription == "Path is invalid; must be set")
+	}
+
+	// Sonarr.validate never constructs .validation with an empty array (it only throws .validation after
+	// checking !failures.isEmpty), but the case is public, so a directly-constructed empty array shouldn't
+	// produce a blank description.
+	@Test func validationWithNoFailuresFallsBackToAGenericMessage() {
+		let error = SonarrResponseError.validation([])
+		#expect(error.errorDescription == "The request was rejected as invalid.")
 	}
 }
 
